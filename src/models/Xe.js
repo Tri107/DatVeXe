@@ -1,43 +1,48 @@
 const db = require('../config/db');
 
 const Xe = {
+  // Lấy toàn bộ xe kèm tên loại xe
   getAll: async () => {
     const [rows] = await db.query(`
-      SELECT Xe.BienSo, Xe.TenXe, Xe.SucChua, LoaiXe.TenLoai
-      FROM Xe
-      JOIN LoaiXe ON Xe.MaLoai = LoaiXe.MaLoai
+      SELECT x.*, lx.TenLoai
+      FROM Xe x
+      LEFT JOIN LoaiXe lx ON x.MaLoai = lx.MaLoai
     `);
     return rows;
   },
 
-  getByBienSo: async (bienSo) => {
+  // Lấy chi tiết 1 xe theo biển số
+  getById: async (bienSo) => {
     const [rows] = await db.query(`
-      SELECT Xe.BienSo, Xe.TenXe, Xe.SucChua, LoaiXe.TenLoai
-      FROM Xe
-      JOIN LoaiXe ON Xe.MaLoai = LoaiXe.MaLoai
-      WHERE Xe.BienSo = ?
+      SELECT x.*, lx.TenLoai
+      FROM Xe x
+      LEFT JOIN LoaiXe lx ON x.MaLoai = lx.MaLoai
+      WHERE x.BienSo = ?
     `, [bienSo]);
     return rows[0];
   },
 
+  // Thêm xe mới
   create: async (data) => {
     const { BienSo, TenXe, SucChua, MaLoai } = data;
-    await db.query(
+    const [result] = await db.query(
       "INSERT INTO Xe (BienSo, TenXe, SucChua, MaLoai) VALUES (?, ?, ?, ?)",
       [BienSo, TenXe, SucChua, MaLoai]
     );
-    return data;
+    return { BienSo, ...data };
   },
 
+  // Cập nhật thông tin xe
   update: async (bienSo, data) => {
     const { TenXe, SucChua, MaLoai } = data;
     await db.query(
       "UPDATE Xe SET TenXe=?, SucChua=?, MaLoai=? WHERE BienSo=?",
       [TenXe, SucChua, MaLoai, bienSo]
     );
-    return { BienSo, ...data };
+    return { BienSo: bienSo, ...data };
   },
 
+  // Xóa xe
   delete: async (bienSo) => {
     await db.query("DELETE FROM Xe WHERE BienSo=?", [bienSo]);
     return { message: "Xóa xe thành công" };

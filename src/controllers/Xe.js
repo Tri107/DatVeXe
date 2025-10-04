@@ -1,45 +1,47 @@
-const Xe = require('../models/Xe')
+const Xe = require('../models/Xe');
 
 exports.getAll = async (req, res) => {
-    try {
-        res.json(await Xe.getAll());
-    } catch (error) {
-        res.status(500).json({error: error.message});
-    }
+  try {
+    const data = await Xe.getAll();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-exports.getByBienSo = async (req, res) => {
-    try {
-        const data = await Xe.getByBienSo(req.params.bienso)
-        if(!data){
-            return res.status(404).json({message: "Not found"});
-        }
-        res.json(data)
-    } catch (error) {
-        res.status(500).json({ error: err.message });
-    }
+exports.getById = async (req, res) => {
+  try {
+    const data = await Xe.getById(req.params.id);
+    if (!data) return res.status(404).json({ message: "Không tìm thấy xe" });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-exports.create = async (req, res) =>{
-    try {
-        res.status(201).json(await Xe.create(req.body))
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}
+exports.create = async (req, res) => {
+  try {
+    const data = await Xe.create(req.body);
+    res.status(201).json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-exports.update = async (req, res) =>{
-    try {
-        res.status(200).json(await Xe.update(req.params.bienso,req.body))
-    } catch (error) {
-        res.status(500).json({ error: err.message });
-    }
-}
+exports.update = async (req, res) => {
+  try {
+    const data = await Xe.update(req.params.id, req.body);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-exports.delete = async (req, res) =>{
-    try {
-        res.status(200).json(await Xe.delete(req.params.bienso))
-    } catch (error) {
-        res.status(500).json({ error: err.message });
-    }
-}
+exports.delete = async (req, res) => {
+  try {
+    const data = await Xe.delete(req.params.id);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
