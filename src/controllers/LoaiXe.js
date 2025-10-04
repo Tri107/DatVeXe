@@ -2,7 +2,8 @@ const LoaiXe = require('../models/LoaiXe');
 
 exports.getAll = async (req, res) => {
   try {
-    res.json(await LoaiXe.getAll());
+    const data = await LoaiXe.getAll();
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -20,7 +21,8 @@ exports.getById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    res.status(201).json(await LoaiXe.create(req.body));
+    const data = await LoaiXe.create(req.body);
+    res.status(201).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -28,7 +30,8 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    res.json(await LoaiXe.update(req.params.id, req.body));
+    const data = await LoaiXe.update(req.params.id, req.body);
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -36,7 +39,8 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    res.json(await LoaiXe.delete(req.params.id));
+    const data = await LoaiXe.delete(req.params.id);
+    res.json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
