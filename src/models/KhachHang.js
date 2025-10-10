@@ -1,50 +1,39 @@
 const db = require('../config/db');
 
 const KhachHang = {
-  // Lấy toàn bộ khách hàng
   getAll: async () => {
-    const [rows] = await db.query(`
-      SELECT kh.*, tk.Email
-      FROM KhachHang kh
-      LEFT JOIN TaiKhoan tk ON kh.MaTaiKhoan = tk.ID
-    `);
+    const [rows] = await db.query("SELECT KhachHang_id, KhachHang_name, email, SDT FROM KhachHang ORDER BY KhachHang_id DESC");
     return rows;
   },
 
-  // Lấy khách hàng theo ID
   getById: async (id) => {
-    const [rows] = await db.query(`
-      SELECT kh.*, tk.Email
-      FROM KhachHang kh
-      LEFT JOIN TaiKhoan tk ON kh.MaTaiKhoan = tk.ID
-      WHERE kh.MaKhachHang = ?
-    `, [id]);
+    const [rows] = await db.query("SELECT KhachHang_id, KhachHang_name, email, SDT FROM KhachHang WHERE KhachHang_id = ?", [id]);
     return rows[0];
   },
 
-  // Tạo mới khách hàng
   create: async (data) => {
-    const { MaTaiKhoan, HoTen, GioiTinh, Tuoi } = data;
+    const { KhachHang_name, email, SDT } = data;
     const [result] = await db.query(
-      "INSERT INTO KhachHang (MaTaiKhoan, HoTen, GioiTinh, Tuoi) VALUES (?, ?, ?, ?)",
-      [MaTaiKhoan, HoTen, GioiTinh, Tuoi]
+      "INSERT INTO KhachHang (KhachHang_name, email, SDT) VALUES (?, ?, ?)",
+      [KhachHang_name, email, SDT]
     );
-    return { MaKhachHang: result.insertId, ...data };
+    return { KhachHang_id: result.insertId, KhachHang_name, email, SDT };
   },
 
-  // Cập nhật khách hàng
   update: async (id, data) => {
-    const { MaTaiKhoan, HoTen, GioiTinh, Tuoi } = data;
-    await db.query(
-      "UPDATE KhachHang SET MaTaiKhoan=?, HoTen=?, GioiTinh=?, Tuoi=? WHERE MaKhachHang=?",
-      [MaTaiKhoan, HoTen, GioiTinh, Tuoi, id]
-    );
-    return { MaKhachHang: id, ...data };
+    const fields = [];
+    const params = [];
+    if (data.KhachHang_name !== undefined) { fields.push("KhachHang_name = ?"); params.push(data.KhachHang_name); }
+    if (data.email !== undefined) { fields.push("email = ?"); params.push(data.email); }
+    if (data.SDT !== undefined) { fields.push("SDT = ?"); params.push(data.SDT); }
+    if (!fields.length) return KhachHang.getById(id);
+    params.push(id);
+    await db.query(`UPDATE KhachHang SET ${fields.join(', ')} WHERE KhachHang_id = ?`, params);
+    return KhachHang.getById(id);
   },
 
-  // Xóa khách hàng
   delete: async (id) => {
-    await db.query("DELETE FROM KhachHang WHERE MaKhachHang=?", [id]);
+    await db.query("DELETE FROM KhachHang WHERE KhachHang_id = ?", [id]);
     return { message: "Xóa khách hàng thành công" };
   }
 };

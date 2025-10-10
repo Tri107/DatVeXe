@@ -1,11 +1,12 @@
+// routes/TaiKhoan.js
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/TaiKhoan');
 
 router.get('/', controller.getAll);
-router.get('/:id', controller.getById);
+router.get('/:sdt', controller.getBySDT);
 router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.delete);
+router.put('/:sdt', controller.update);
+router.delete('/:sdt', controller.delete);
 
 module.exports = router;

@@ -1,47 +1,34 @@
 const Chuyen = require('../models/Chuyen');
 
-exports.getAll = async (req, res) => {
-  try {
-    const data = await Chuyen.getAll();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+module.exports = {
+  getAll: async (req, res, next) => {
+    try { res.json(await Chuyen.getAll()); }
+    catch (err) { next(err); }
+  },
 
-exports.getById = async (req, res) => {
-  try {
-    const data = await Chuyen.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Không tìm thấy chuyến" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  getById: async (req, res, next) => {
+    try {
+      const item = await Chuyen.getById(req.params.id);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy chuyến' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
 
-exports.create = async (req, res) => {
-  try {
-    const data = await Chuyen.create(req.body);
-    res.status(201).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  create: async (req, res, next) => {
+    try { res.status(201).json(await Chuyen.create(req.body)); }
+    catch (err) { next(err); }
+  },
 
-exports.update = async (req, res) => {
-  try {
-    const data = await Chuyen.update(req.params.id, req.body);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  update: async (req, res, next) => {
+    try {
+      const updated = await Chuyen.update(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy chuyến' });
+      res.json(updated);
+    } catch (err) { next(err); }
+  },
 
-exports.delete = async (req, res) => {
-  try {
-    const data = await Chuyen.delete(req.params.id);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  delete: async (req, res, next) => {
+    try { await Chuyen.delete(req.params.id); res.json({ message: 'Xóa chuyến thành công' }); }
+    catch (err) { next(err); }
   }
 };

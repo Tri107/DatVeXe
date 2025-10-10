@@ -1,50 +1,39 @@
 const db = require('../config/db');
 
 const Xe = {
-  // Lấy toàn bộ xe kèm tên loại xe
   getAll: async () => {
-    const [rows] = await db.query(`
-      SELECT x.*, lx.TenLoai
-      FROM Xe x
-      LEFT JOIN LoaiXe lx ON x.MaLoai = lx.MaLoai
-    `);
+    const [rows] = await db.query("SELECT Xe_id, Bien_so, Trang_thai, LoaiXe_id FROM Xe ORDER BY Xe_id DESC");
     return rows;
   },
 
-  // Lấy chi tiết 1 xe theo biển số
-  getById: async (bienSo) => {
-    const [rows] = await db.query(`
-      SELECT x.*, lx.TenLoai
-      FROM Xe x
-      LEFT JOIN LoaiXe lx ON x.MaLoai = lx.MaLoai
-      WHERE x.BienSo = ?
-    `, [bienSo]);
+  getById: async (id) => {
+    const [rows] = await db.query("SELECT Xe_id, Bien_so, Trang_thai, LoaiXe_id FROM Xe WHERE Xe_id = ?", [id]);
     return rows[0];
   },
 
-  // Thêm xe mới
   create: async (data) => {
-    const { BienSo, TenXe, SucChua, MaLoai } = data;
+    const { Bien_so, Trang_thai, LoaiXe_id } = data;
     const [result] = await db.query(
-      "INSERT INTO Xe (BienSo, TenXe, SucChua, MaLoai) VALUES (?, ?, ?, ?)",
-      [BienSo, TenXe, SucChua, MaLoai]
+      "INSERT INTO Xe (Bien_so, Trang_thai, LoaiXe_id) VALUES (?, ?, ?)",
+      [Bien_so, Trang_thai, LoaiXe_id]
     );
-    return { BienSo, ...data };
+    return { Xe_id: result.insertId, ...data };
   },
 
-  // Cập nhật thông tin xe
-  update: async (bienSo, data) => {
-    const { TenXe, SucChua, MaLoai } = data;
-    await db.query(
-      "UPDATE Xe SET TenXe=?, SucChua=?, MaLoai=? WHERE BienSo=?",
-      [TenXe, SucChua, MaLoai, bienSo]
-    );
-    return { BienSo: bienSo, ...data };
+  update: async (id, data) => {
+    const fields = [];
+    const params = [];
+    if (data.Bien_so !== undefined) { fields.push("Bien_so = ?"); params.push(data.Bien_so); }
+    if (data.Trang_thai !== undefined) { fields.push("Trang_thai = ?"); params.push(data.Trang_thai); }
+    if (data.LoaiXe_id !== undefined) { fields.push("LoaiXe_id = ?"); params.push(data.LoaiXe_id); }
+    if (!fields.length) return Xe.getById(id);
+    params.push(id);
+    await db.query(`UPDATE Xe SET ${fields.join(', ')} WHERE Xe_id = ?`, params);
+    return Xe.getById(id);
   },
 
-  // Xóa xe
-  delete: async (bienSo) => {
-    await db.query("DELETE FROM Xe WHERE BienSo=?", [bienSo]);
+  delete: async (id) => {
+    await db.query("DELETE FROM Xe WHERE Xe_id = ?", [id]);
     return { message: "Xóa xe thành công" };
   }
 };
