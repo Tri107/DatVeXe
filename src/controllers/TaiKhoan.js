@@ -6,40 +6,67 @@ module.exports = {
     try {
       const data = await TaiKhoan.getAll();
       res.json(data);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   },
-
-  // Khóa chính là SDT
   getBySDT: async (req, res, next) => {
     try {
       const { sdt } = req.params;
       const item = await TaiKhoan.getBySDT(sdt);
-      if (!item) return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      if (!item) {
+        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      }
       res.json(item);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   },
-
   create: async (req, res, next) => {
     try {
-      const { SDT, password, role } = req.body;
-      if (!SDT || !password) return res.status(400).json({ message: 'Thiếu SDT hoặc password' });
-      const hash = await bcrypt.hash(password, 10);
-      const created = await TaiKhoan.create({ SDT, Password_hash: hash, role: role || 'khachhang' });
-      res.status(201).json(created);
-    } catch (err) { next(err); }
-  },
+      
+      const { SDT, Password_hash, role } = req.body;
 
-  update: async (req, res, next) => {
+      if (!SDT || !Password_hash) {
+        return res.status(400).json({ message: 'Thiếu SDT hoặc Password_hash' });
+      }
+      const hash = await bcrypt.hash(Password_hash, 10);
+      const created = await TaiKhoan.create({
+        SDT,
+        Password_hash: hash,
+        role: role || 'khachhang'
+      });
+
+      res.status(201).json({
+        message: 'Tạo tài khoản thành công',
+        data: created
+      });
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  },
+ update: async (req, res, next) => {
     try {
       const { sdt } = req.params;
-      const { password, role } = req.body;
+      const { Password_hash, role } = req.body;
+
       const payload = {};
-      if (password !== undefined) payload.Password_hash = await bcrypt.hash(password, 10);
-      if (role !== undefined) payload.role = role;
+      if (Password_hash) payload.Password_hash = await bcrypt.hash(Password_hash, 10);
+      if (role) payload.role = role;
+
       const updated = await TaiKhoan.update(sdt, payload);
-      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
-      res.json(updated);
-    } catch (err) { next(err); }
+      if (!updated) {
+        return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      }
+
+      res.json({
+        message: 'Cập nhật tài khoản thành công',
+        data: updated
+      });
+    } catch (err) {
+      next(err);
+    }
   },
 
   delete: async (req, res, next) => {
@@ -47,6 +74,8 @@ module.exports = {
       const { sdt } = req.params;
       await TaiKhoan.delete(sdt);
       res.json({ message: 'Xóa tài khoản thành công' });
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 };
