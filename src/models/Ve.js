@@ -1,55 +1,45 @@
 const db = require('../config/db');
 
 const Ve = {
-  // Lấy toàn bộ vé kèm thông tin khách hàng + chuyến
   getAll: async () => {
-    const [rows] = await db.query(`
-      SELECT v.*, kh.HoTen, c.ThoiGianKhoiHanh, td.TenTuyen
-      FROM Ve v
-      LEFT JOIN KhachHang kh ON v.MaKhachHang = kh.MaKhachHang
-      LEFT JOIN Chuyen c ON v.MaChuyen = c.MaChuyen
-      LEFT JOIN TuyenDuong td ON c.SoTuyen = td.SoTuyen
-    `);
+    const [rows] = await db.query(
+      `SELECT Ve_id, Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id
+       FROM Ve ORDER BY Ve_id DESC`
+    );
     return rows;
   },
 
-  // Lấy chi tiết 1 vé
   getById: async (id) => {
-    const [rows] = await db.query(`
-      SELECT v.*, kh.HoTen, kh.GioiTinh, kh.Tuoi,
-             c.ThoiGianKhoiHanh, c.DuKienKhoiHanh, td.TenTuyen
-      FROM Ve v
-      LEFT JOIN KhachHang kh ON v.MaKhachHang = kh.MaKhachHang
-      LEFT JOIN Chuyen c ON v.MaChuyen = c.MaChuyen
-      LEFT JOIN TuyenDuong td ON c.SoTuyen = td.SoTuyen
-      WHERE v.SoVe = ?
-    `, [id]);
+    const [rows] = await db.query(
+      `SELECT Ve_id, Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id
+       FROM Ve WHERE Ve_id = ?`, [id]
+    );
     return rows[0];
   },
 
-  // Tạo vé mới
   create: async (data) => {
-    const { MaKhachHang, MaChuyen, GiaVe, PhuongThucThanhToan, GhiChu } = data;
+    const { Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id } = data;
     const [result] = await db.query(
-      "INSERT INTO Ve (MaKhachHang, MaChuyen, GiaVe, PhuongThucThanhToan, GhiChu) VALUES (?, ?, ?, ?, ?)",
-      [MaKhachHang, MaChuyen, GiaVe, PhuongThucThanhToan, GhiChu]
+      "INSERT INTO Ve (Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id) VALUES (?, ?, ?, ?, ?)",
+      [Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id]
     );
-    return { SoVe: result.insertId, ...data };
+    return { Ve_id: result.insertId, ...data };
   },
 
-  // Cập nhật vé
   update: async (id, data) => {
-    const { MaKhachHang, MaChuyen, GiaVe, PhuongThucThanhToan, GhiChu } = data;
-    await db.query(
-      "UPDATE Ve SET MaKhachHang=?, MaChuyen=?, GiaVe=?, PhuongThucThanhToan=?, GhiChu=? WHERE SoVe=?",
-      [MaKhachHang, MaChuyen, GiaVe, PhuongThucThanhToan, GhiChu, id]
-    );
-    return { SoVe: id, ...data };
+    const fields = [];
+    const params = [];
+    ["Ve_gia","NgayTao","GhiChu","KhachHang_id","Chuyen_id"].forEach(k=>{
+      if (data[k] !== undefined) { fields.push(`${k} = ?`); params.push(data[k]); }
+    });
+    if (!fields.length) return Ve.getById(id);
+    params.push(id);
+    await db.query(`UPDATE Ve SET ${fields.join(', ')} WHERE Ve_id = ?`, params);
+    return Ve.getById(id);
   },
 
-  // Xóa vé
   delete: async (id) => {
-    await db.query("DELETE FROM Ve WHERE SoVe=?", [id]);
+    await db.query("DELETE FROM Ve WHERE Ve_id = ?", [id]);
     return { message: "Xóa vé thành công" };
   }
 };

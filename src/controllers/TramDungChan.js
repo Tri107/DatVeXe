@@ -1,58 +1,34 @@
 const TramDungChan = require('../models/TramDungChan');
 
-exports.getAll = async (req, res) => {
-  try {
-    const data = await TramDungChan.getAll();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+module.exports = {
+  getAll: async (req, res, next) => {
+    try { res.json(await TramDungChan.getAll()); }
+    catch (err) { next(err); }
+  },
 
-exports.getById = async (req, res) => {
-  try {
-    const data = await TramDungChan.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Không tìm thấy trạm dừng chân" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  getById: async (req, res, next) => {
+    try {
+      const item = await TramDungChan.getById(req.params.id);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy trạm dừng' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
 
-exports.create = async (req, res) => {
-  try {
-    const data = await TramDungChan.create(req.body);
-    res.status(201).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  create: async (req, res, next) => {
+    try { res.status(201).json(await TramDungChan.create(req.body)); }
+    catch (err) { next(err); }
+  },
 
-exports.update = async (req, res) => {
-  try {
-    const data = await TramDungChan.update(req.params.id, req.body);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  update: async (req, res, next) => {
+    try {
+      const updated = await TramDungChan.update(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy trạm dừng' });
+      res.json(updated);
+    } catch (err) { next(err); }
+  },
 
-exports.delete = async (req, res) => {
-  try {
-    const data = await TramDungChan.delete(req.params.id);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Gán trạm vào chuyến
-exports.assignToChuyen = async (req, res) => {
-  try {
-    const { MaTram, MaChuyen } = req.body;
-    const data = await TramDungChan.assignToChuyen(MaTram, MaChuyen);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  delete: async (req, res, next) => {
+    try { await TramDungChan.delete(req.params.id); res.json({ message: 'Xóa trạm dừng chân thành công' }); }
+    catch (err) { next(err); }
   }
 };

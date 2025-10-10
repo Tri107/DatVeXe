@@ -1,47 +1,34 @@
 const TuyenDuong = require('../models/TuyenDuong');
 
-exports.getAll = async (req, res) => {
-  try {
-    const data = await TuyenDuong.getAll();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+module.exports = {
+  getAll: async (req, res, next) => {
+    try { res.json(await TuyenDuong.getAll()); }
+    catch (err) { next(err); }
+  },
 
-exports.getById = async (req, res) => {
-  try {
-    const data = await TuyenDuong.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Không tìm thấy tuyến đường" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  getById: async (req, res, next) => {
+    try {
+      const item = await TuyenDuong.getById(req.params.id);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy tuyến đường' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
 
-exports.create = async (req, res) => {
-  try {
-    const data = await TuyenDuong.create(req.body);
-    res.status(201).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  create: async (req, res, next) => {
+    try { res.status(201).json(await TuyenDuong.create(req.body)); }
+    catch (err) { next(err); }
+  },
 
-exports.update = async (req, res) => {
-  try {
-    const data = await TuyenDuong.update(req.params.id, req.body);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  update: async (req, res, next) => {
+    try {
+      const updated = await TuyenDuong.update(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tuyến đường' });
+      res.json(updated);
+    } catch (err) { next(err); }
+  },
 
-exports.delete = async (req, res) => {
-  try {
-    const data = await TuyenDuong.delete(req.params.id);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  delete: async (req, res, next) => {
+    try { await TuyenDuong.delete(req.params.id); res.json({ message: 'Xóa tuyến đường thành công' }); }
+    catch (err) { next(err); }
   }
 };

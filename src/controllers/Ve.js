@@ -1,47 +1,34 @@
 const Ve = require('../models/Ve');
 
-exports.getAll = async (req, res) => {
-  try {
-    const data = await Ve.getAll();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+module.exports = {
+  getAll: async (req, res, next) => {
+    try { res.json(await Ve.getAll()); }
+    catch (err) { next(err); }
+  },
 
-exports.getById = async (req, res) => {
-  try {
-    const data = await Ve.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Không tìm thấy vé" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  getById: async (req, res, next) => {
+    try {
+      const item = await Ve.getById(req.params.id);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy vé' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
 
-exports.create = async (req, res) => {
-  try {
-    const data = await Ve.create(req.body);
-    res.status(201).json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  create: async (req, res, next) => {
+    try { res.status(201).json(await Ve.create(req.body)); }
+    catch (err) { next(err); }
+  },
 
-exports.update = async (req, res) => {
-  try {
-    const data = await Ve.update(req.params.id, req.body);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  update: async (req, res, next) => {
+    try {
+      const updated = await Ve.update(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy vé' });
+      res.json(updated);
+    } catch (err) { next(err); }
+  },
 
-exports.delete = async (req, res) => {
-  try {
-    const data = await Ve.delete(req.params.id);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  delete: async (req, res, next) => {
+    try { await Ve.delete(req.params.id); res.json({ message: 'Xóa vé thành công' }); }
+    catch (err) { next(err); }
   }
 };

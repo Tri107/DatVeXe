@@ -1,48 +1,52 @@
-const TaiKhoan = require('../models/TaiKhoan');
 const bcrypt = require('bcrypt');
+const TaiKhoan = require('../models/TaiKhoan');
 
-exports.getAll = async (req, res) => {
-  try {
-    res.json(await TaiKhoan.getAll());
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+module.exports = {
+  getAll: async (req, res, next) => {
+    try {
+      const data = await TaiKhoan.getAll();
+      res.json(data);
+    } catch (err) { next(err); }
+  },
 
-exports.getById = async (req, res) => {
-  try {
-    const data = await TaiKhoan.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Không tìm thấy tài khoản" });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  // Khóa chính là SDT
+  getBySDT: async (req, res, next) => {
+    try {
+      const { sdt } = req.params;
+      const item = await TaiKhoan.getBySDT(sdt);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
 
-exports.create = async (req, res) => {
-  try {
-    const hashed = await bcrypt.hash(req.body.MatKhau, 10);
-    const tk = await TaiKhoan.create({ ...req.body, MatKhau: hashed });
-    res.status(201).json(tk);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  create: async (req, res, next) => {
+    try {
+      const { SDT, password, role } = req.body;
+      if (!SDT || !password) return res.status(400).json({ message: 'Thiếu SDT hoặc password' });
+      const hash = await bcrypt.hash(password, 10);
+      const created = await TaiKhoan.create({ SDT, Password_hash: hash, role: role || 'khachhang' });
+      res.status(201).json(created);
+    } catch (err) { next(err); }
+  },
 
-exports.update = async (req, res) => {
-  try {
-    const hashed = await bcrypt.hash(req.body.MatKhau, 10);
-    const tk = await TaiKhoan.update(req.params.id, { ...req.body, MatKhau: hashed });
-    res.json(tk);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  update: async (req, res, next) => {
+    try {
+      const { sdt } = req.params;
+      const { password, role } = req.body;
+      const payload = {};
+      if (password !== undefined) payload.Password_hash = await bcrypt.hash(password, 10);
+      if (role !== undefined) payload.role = role;
+      const updated = await TaiKhoan.update(sdt, payload);
+      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài khoản' });
+      res.json(updated);
+    } catch (err) { next(err); }
+  },
 
-exports.delete = async (req, res) => {
-  try {
-    res.json(await TaiKhoan.delete(req.params.id));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  delete: async (req, res, next) => {
+    try {
+      const { sdt } = req.params;
+      await TaiKhoan.delete(sdt);
+      res.json({ message: 'Xóa tài khoản thành công' });
+    } catch (err) { next(err); }
   }
 };

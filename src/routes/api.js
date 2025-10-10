@@ -12,9 +12,9 @@ const tramDungChanRoutes = require('./TramDungChan');
 const tuyenDuongRoutes = require('./TuyenDuong');
 const benXeRoutes = require('./BenXe');
 const tinhThanhPhoRoutes = require('./TinhThanhPho');
-const gheRoutes = require('./Ghe');
-const tramDungChanChuyenRoutes = require('./TramDungChan_Chuyen');
-const xeGheRoutes = require('./Xe_Ghe');
+const taiXeRoutes = require('./TaiXe')
+const tramChuyenRoutes = require('./Tram_Chuyen');
+
 
 // 🔹 Gắn tiền tố /api
 router.use('/loaixe', loaiXeRoutes);
@@ -27,8 +27,7 @@ router.use('/tramdungchan', tramDungChanRoutes);
 router.use('/tuyenduong', tuyenDuongRoutes);
 router.use('/benxe', benXeRoutes);
 router.use('/tinhthanhpho', tinhThanhPhoRoutes);
-router.use('/ghe', gheRoutes);
-router.use('/tramdungchan_chuyen', tramDungChanChuyenRoutes);
-router.use('/xe_ghe', xeGheRoutes);
+router.use('/tram_chuyen', tramChuyenRoutes);
+router.use('/taixe',taiXeRoutes);
 
 module.exports = router;

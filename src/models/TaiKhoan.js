@@ -2,35 +2,37 @@ const db = require('../config/db');
 
 const TaiKhoan = {
   getAll: async () => {
-    const [rows] = await db.query("SELECT ID, Email, Loai FROM TaiKhoan");
+    const [rows] = await db.query("SELECT SDT, role FROM TaiKhoan");
     return rows;
   },
 
-  getById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM TaiKhoan WHERE ID=?", [id]);
+  getBySDT: async (SDT) => {
+    const [rows] = await db.query("SELECT SDT, Password_hash, role FROM TaiKhoan WHERE SDT = ?", [SDT]);
     return rows[0];
   },
 
   create: async (data) => {
-    const { Email, MatKhau, Loai } = data;
-    const [result] = await db.query(
-      "INSERT INTO TaiKhoan (Email, MatKhau, Loai) VALUES (?, ?, ?)",
-      [Email, MatKhau, Loai]
-    );
-    return { ID: result.insertId, ...data };
-  },
-
-  update: async (id, data) => {
-    const { Email, MatKhau, Loai } = data;
+    const { SDT, Password_hash, role = 'khachhang' } = data;
     await db.query(
-      "UPDATE TaiKhoan SET Email=?, MatKhau=?, Loai=? WHERE ID=?",
-      [Email, MatKhau, Loai, id]
+      "INSERT INTO TaiKhoan (SDT, Password_hash, role) VALUES (?, ?, ?)",
+      [SDT, Password_hash, role]
     );
-    return { ID: id, ...data };
+    return { SDT, role };
   },
 
-  delete: async (id) => {
-    await db.query("DELETE FROM TaiKhoan WHERE ID=?", [id]);
+  update: async (SDT, data) => {
+    const fields = [];
+    const params = [];
+    if (data.Password_hash !== undefined) { fields.push("Password_hash = ?"); params.push(data.Password_hash); }
+    if (data.role !== undefined) { fields.push("role = ?"); params.push(data.role); }
+    if (!fields.length) return TaiKhoan.getBySDT(SDT);
+    params.push(SDT);
+    await db.query(`UPDATE TaiKhoan SET ${fields.join(', ')} WHERE SDT = ?`, params);
+    return TaiKhoan.getBySDT(SDT);
+  },
+
+  delete: async (SDT) => {
+    await db.query("DELETE FROM TaiKhoan WHERE SDT = ?", [SDT]);
     return { message: "Xóa tài khoản thành công" };
   }
 };
