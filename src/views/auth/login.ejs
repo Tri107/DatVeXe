@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@2/css/pico.min.css">
+  <style>body{display:grid;place-items:center;height:100vh;margin:0}</style>
+</head>
+<body>
+  <form method="post" action="/admin/login" style="min-width:360px">
+    <h1>Đăng nhập</h1>
+    <% if (error) { %><mark style="display:block;margin:.5rem 0"><%= error %></mark><% } %>
+    <label>Số điện thoại <input type="text" name="SDT" required></label>
+    <label>Mật khẩu <input type="password" name="password" required></label>
+    <button type="submit">Đăng nhập</button>
+  </form>
+</body>
+</html>
