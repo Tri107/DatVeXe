@@ -1,0 +1,35 @@
+<%- include('../partials/header', { title: 'Loại xe', user }) %>
+
+<section>
+  <h3>Danh sách loại xe</h3>
+  <% if (error) { %><mark><%= error %></mark><% } %>
+  <table role="grid">
+    <thead><tr><th>ID</th><th>Tên loại</th><th>Sức chứa</th><th></th></tr></thead>
+    <tbody>
+      <% items.forEach(it => { %>
+        <tr>
+          <td><%= it.LoaiXe_id %></td>
+          <td><%= it.LoaiXe_name %></td>
+          <td><%= it.Suc_chua %></td>
+          <td>
+            <a role="button" href="/admin/loaixe/<%= it.LoaiXe_id %>/edit">Sửa</a>
+            <form style="display:inline" method="post" action="/admin/loaixe/<%= it.LoaiXe_id %>?_method=DELETE">
+              <button class="contrast" onclick="return confirm('Xoá mục này?')">Xoá</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>Thêm loại xe</h3>
+  <form method="post" action="/admin/loaixe">
+    <label>Tên loại <input name="LoaiXe_name" required></label>
+    <label>Sức chứa <input name="Suc_chua" type="number" min="1" required></label>
+    <button type="submit">Thêm</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

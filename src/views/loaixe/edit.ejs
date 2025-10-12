@@ -1,0 +1,18 @@
+<%- include('../partials/header', { title: 'Sửa loại xe', user }) %>
+
+<section>
+  <h3>Sửa loại xe #<%= item.LoaiXe_id %></h3>
+  <% if (error) { %><mark><%= error %></mark><% } %>
+  <form method="post" action="/admin/loaixe/<%= item.LoaiXe_id %>?_method=PUT">
+    <label>Tên loại
+      <input name="LoaiXe_name" value="<%= item.LoaiXe_name %>" required>
+    </label>
+    <label>Sức chứa
+      <input name="Suc_chua" type="number" min="1" value="<%= item.Suc_chua %>" required>
+    </label>
+    <button type="submit">Lưu</button>
+    <a role="button" class="secondary" href="/admin/loaixe">Huỷ</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
