@@ -1,0 +1,40 @@
+<%- include('../partials/header', { title: 'Sửa tài xế', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Sửa thông tin tài xế</h2>
+
+  <form action="/admin/taixe/edit/<%= item.TaiXe_id %>" method="POST" class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Tên tài xế</label>
+      <input type="text" name="TaiXe_name" class="form-control" value="<%= item.TaiXe_name %>" required>
+    </div>
+
+    <div class="col-md-1">
+      <label class="form-label">Tuổi</label>
+      <input type="number" name="TaiXe_age" class="form-control" value="<%= item.TaiXe_age %>" required>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Bằng lái</label>
+      <input type="text" name="TaiXe_BangLai" class="form-control" value="<%= item.TaiXe_BangLai %>" required>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Ngày vào làm</label>
+      <input type="date" name="NgayVaoLam" class="form-control"
+        value="<%= new Date(item.NgayVaoLam).toISOString().slice(0,10) %>" required>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">SĐT</label>
+      <input type="text" name="SDT" class="form-control" value="<%= item.SDT %>" required>
+    </div>
+
+    <div class="col-12 text-end">
+      <button class="btn btn-success">Cập nhật</button>
+      <a href="/admin/taixe" class="btn btn-secondary">Hủy</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
