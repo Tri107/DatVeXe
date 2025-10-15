@@ -10,7 +10,7 @@
     <thead>
       <tr>
         <th>Số điện thoại</th>
-        <th>Mật khẩu</th>
+  
         <th>Vai trò</th>
         <th>Hành động</th>
       </tr>
@@ -24,10 +24,7 @@
             <td><%= item.SDT %></td>
 
             <!-- 🔒 Ẩn mật khẩu bằng dấu tròn -->
-            <td>
-              <% const mask = '•'.repeat(10); %>
-              <%= mask %>
-            </td>
+           
 
             <td><%= item.role %></td>
 

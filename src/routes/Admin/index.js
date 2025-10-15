@@ -10,4 +10,8 @@ router.use('/xe', require('./xe'));
 router.use('/taikhoan', require('./taikhoan'));
 router.use('/khachhang', require('./khachhang'));
 router.use('/tramdungchan', require('./tramdungchan'));
+router.use('/chuyen', require('./chuyen'));
+router.use('/ve', require('./ve'));
+router.use('/taixe', require('./taixe'));
+
 module.exports = router;
