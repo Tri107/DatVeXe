@@ -6,7 +6,7 @@ const LoaiXe = require('../../models/LoaiXe');
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
     const items = await LoaiXe.getAll();
-    res.render('loaixe/index', { user: req.session.user, items, error: null });
+    res.render('loaixe/index', { user: req.user, items, error: null });
   } catch (e) { next(e); }
 });
 
@@ -17,7 +17,7 @@ router.post('/', requireAdmin, async (req, res, next) => {
     res.redirect('/admin/loaixe');
   } catch (e) {
     const items = await LoaiXe.getAll();
-    res.render('loaixe/index', { user: req.session.user, items, error: e.message || 'Lỗi tạo loại xe' });
+    res.render('loaixe/index', { user: req.user, items, error: e.message || 'Lỗi tạo loại xe' });
   }
 });
 
@@ -25,7 +25,7 @@ router.get('/:id/edit', requireAdmin, async (req, res, next) => {
   try {
     const item = await LoaiXe.getById(req.params.id);
     if (!item) return res.redirect('/admin/loaixe');
-    res.render('loaixe/edit', { user: req.session.user, item, error: null });
+    res.render('loaixe/edit', { user: req.user, item, error: null });
   } catch (e) { next(e); }
 });
 
@@ -36,7 +36,7 @@ router.put('/:id', requireAdmin, async (req, res, next) => {
     res.redirect('/admin/loaixe');
   } catch (e) {
     const item = await LoaiXe.getById(req.params.id);
-    res.render('loaixe/edit', { user: req.session.user, item, error: e.message || 'Lỗi cập nhật' });
+    res.render('loaixe/edit', { user: req.user, item, error: e.message || 'Lỗi cập nhật' });
   }
 });
 
