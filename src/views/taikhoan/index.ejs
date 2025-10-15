@@ -1,0 +1,70 @@
+<%- include('../partials/header', { title: 'Quản lý tài khoản', user }) %>
+
+<section>
+  <h3>Danh sách tài khoản</h3>
+  <% if (error) { %>
+    <mark><%= error %></mark>
+  <% } %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Số điện thoại</th>
+        <th>Mật khẩu</th>
+        <th>Vai trò</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (items.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;">Chưa có tài khoản nào</td></tr>
+      <% } else { %>
+        <% items.forEach(item => { %>
+          <tr>
+            <td><%= item.SDT %></td>
+
+            <!-- 🔒 Ẩn mật khẩu bằng dấu tròn -->
+            <td>
+              <% const mask = '•'.repeat(10); %>
+              <%= mask %>
+            </td>
+
+            <td><%= item.role %></td>
+
+            <td>
+              <a href="/admin/taikhoan/<%= item.SDT %>/edit">✏️ Sửa</a>
+              <form method="post" action="/admin/taikhoan/<%= item.SDT %>?_method=DELETE" style="display:inline;">
+                <button type="submit" onclick="return confirm('Xác nhận xóa tài khoản này?')">🗑️ Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h4>➕ Thêm tài khoản mới</h4>
+  <form method="post" action="/admin/taikhoan">
+    <label>Số điện thoại
+      <input name="SDT" required placeholder="VD: 0987654321">
+    </label>
+
+    <label>Mật khẩu
+      <input name="Password_hash" type="password" required placeholder="Nhập mật khẩu">
+    </label>
+
+    <label>Vai trò
+      <select name="role" required>
+        <option value="khachhang">Khách hàng</option>
+        <option value="taixe">Tài xế</option>
+        <option value="admin">Admin</option>
+      </select>
+    </label>
+
+    <button type="submit">Thêm mới</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

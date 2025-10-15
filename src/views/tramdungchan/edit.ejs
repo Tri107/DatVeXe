@@ -1,0 +1,21 @@
+<%- include('../partials/header', { title: 'Sửa trạm dừng chân', user }) %>
+
+<section>
+  <h3>Sửa trạm dừng chân #<%= item.TramDungChan_id %></h3>
+  <% if (error) { %><mark><%= error %></mark><% } %>
+
+  <form method="post" action="/admin/tramdungchan/<%= item.TramDungChan_id %>?_method=PUT">
+    <label>Tên trạm dừng
+      <input name="TramDungChan_name" value="<%= item.TramDungChan_name %>" required>
+    </label>
+
+    <label>Thời gian dừng (phút)
+      <input name="Thoi_gian_dung" type="number" min="1" value="<%= item.Thoi_gian_dung %>" required>
+    </label>
+
+    <button type="submit">Lưu thay đổi</button>
+    <a role="button" class="secondary" href="/admin/tramdungchan">Huỷ</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
