@@ -1,0 +1,28 @@
+<%- include('../partials/header', { title: 'Sửa Bến Xe', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Chỉnh sửa Bến Xe</h2>
+
+  <form action="/admin/benxe/edit/<%= item.BenXe_id %>" method="POST">
+    <div class="mb-3">
+      <label class="form-label">Tên Bến Xe</label>
+      <input type="text" name="BenXe_name" class="form-control" value="<%= item.BenXe_name %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tỉnh/Thành phố</label>
+      <select name="TinhThanhPho_id" class="form-select" required>
+        <% tinhthanh.forEach(t => { %>
+          <option value="<%= t.TinhThanhPho_id %>" <%= t.TinhThanhPho_id === item.TinhThanhPho_id ? 'selected' : '' %>>
+            <%= t.TinhThanhPho_name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+    <a href="/admin/benxe" class="btn btn-secondary">Quay lại</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

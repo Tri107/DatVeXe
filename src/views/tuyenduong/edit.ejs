@@ -1,0 +1,40 @@
+<%- include('../partials/header', { title: 'Sửa Tuyến Đường', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Chỉnh sửa Tuyến Đường</h2>
+
+  <form action="/admin/tuyenduong/edit/<%= item.TuyenDuong_id %>" method="POST">
+    <div class="mb-3">
+      <label class="form-label">Quãng đường (km)</label>
+      <input type="text" name="Quang_duong" class="form-control" value="<%= item.Quang_duong %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Thời gian (giờ)</label>
+      <input type="text" name="Thoi_gian" class="form-control" value="<%= item.Thoi_gian %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Bến đi</label>
+      <select name="Ben_di" class="form-select" required>
+        <% benxe.forEach(b => { %>
+          <option value="<%= b.BenXe_id %>" <%= b.BenXe_id === item.Ben_di ? 'selected' : '' %>><%= b.BenXe_name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Bến đến</label>
+      <select name="Ben_den" class="form-select" required>
+        <% benxe.forEach(b => { %>
+          <option value="<%= b.BenXe_id %>" <%= b.BenXe_id === item.Ben_den ? 'selected' : '' %>><%= b.BenXe_name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+    <a href="/admin/tuyenduong" class="btn btn-secondary">Quay lại</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

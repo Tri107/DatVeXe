@@ -1,0 +1,43 @@
+<%- include('../partials/header', { title: 'Quản lý Tỉnh/Thành phố', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Quản lý Tỉnh/Thành phố</h2>
+
+  <!-- Form thêm mới -->
+  <form action="/admin/tinhthanhpho/add" method="POST" class="mb-4">
+    <div class="input-group">
+      <input type="text" name="TinhThanhPho_name" class="form-control" placeholder="Nhập tên tỉnh/thành..." required>
+      <button class="btn btn-primary" type="submit">Thêm</button>
+    </div>
+  </form>
+
+  <!-- Bảng danh sách -->
+  <table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th style="width: 80px;">ID</th>
+        <th>Tên Tỉnh/Thành phố</th>
+        <th style="width: 160px;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% list.forEach(item => { %>
+        <tr>
+          <td><%= item.TinhThanhPho_id %></td>
+          <td><%= item.TinhThanhPho_name %></td>
+          <td>
+            <!-- Nút sửa -->
+            <a href="/admin/tinhthanhpho/edit/<%= item.TinhThanhPho_id %>" class="btn btn-warning btn-sm">Sửa</a>
+
+            <!-- Nút xóa -->
+            <form action="/admin/tinhthanhpho/delete/<%= item.TinhThanhPho_id %>" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>
