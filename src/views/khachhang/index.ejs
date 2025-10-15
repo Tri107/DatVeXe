@@ -1,0 +1,62 @@
+<%- include('../partials/header', { title: 'Quản lý khách hàng', user }) %>
+
+<section>
+  <h3>Danh sách khách hàng</h3>
+
+  <% if (error) { %>
+    <mark><%= error %></mark>
+  <% } %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tên khách hàng</th>
+        <th>Email</th>
+        <th>Số điện thoại</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!items || items.length === 0) { %>
+        <tr><td colspan="5" style="text-align:center;">Chưa có khách hàng nào</td></tr>
+      <% } else { %>
+        <% items.forEach(item => { %>
+          <tr>
+            <td><%= item.KhachHang_id %></td>
+            <td><%= item.KhachHang_name %></td>
+            <td><%= item.email || '(chưa có email)' %></td>
+            <td><%= item.SDT %></td>
+            <td>
+              <a href="/admin/khachhang/<%= item.KhachHang_id %>/edit">✏️ Sửa</a>
+              <form method="post" action="/admin/khachhang/<%= item.KhachHang_id %>?_method=DELETE" style="display:inline;">
+                <button type="submit" onclick="return confirm('Xác nhận xóa khách hàng này?')">🗑️ Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h4>➕ Thêm khách hàng mới</h4>
+  <form method="post" action="/admin/khachhang">
+    <label>Tên khách hàng
+      <input name="KhachHang_name" required placeholder="VD: Nguyễn Văn A">
+    </label>
+
+    <label>Email
+      <input name="email" type="email" placeholder="VD: abc@gmail.com">
+    </label>
+
+    <label>Số điện thoại
+      <input name="SDT" required placeholder="VD: 0901234567">
+    </label>
+
+    <button type="submit">Thêm mới</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

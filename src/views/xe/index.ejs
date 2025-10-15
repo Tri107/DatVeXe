@@ -1,0 +1,69 @@
+<%- include('../partials/header', { title: 'Quản lý xe', user }) %>
+
+<section>
+  <h3>Danh sách xe</h3>
+  <% if (error) { %>
+    <mark><%= error %></mark>
+  <% } %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Biển số</th>
+        <th>Trạng thái</th>
+        <th>Loại xe</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (items.length === 0) { %>
+        <tr><td colspan="5" style="text-align:center;">Chưa có xe nào</td></tr>
+      <% } else { %>
+        <% items.forEach(item => { %>
+          <tr>
+            <td><%= item.Xe_id %></td>
+            <td><%= item.Bien_so %></td>
+            <td><%= item.Trang_thai %></td>
+            <td><%= item.LoaiXe_name %></td>
+            <td>
+              <a href="/admin/xe/<%= item.Xe_id %>/edit">✏️ Sửa</a>
+              <form method="post" action="/admin/xe/<%= item.Xe_id %>?_method=DELETE" style="display:inline;">
+                <button type="submit" onclick="return confirm('Xác nhận xóa xe này?')">🗑️ Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h4>➕ Thêm xe mới</h4>
+  <form method="post" action="/admin/xe">
+    <label>Biển số
+      <input name="Bien_so" required placeholder="VD: 51A-12345">
+    </label>
+
+    <label>Trạng thái
+      <input name="Trang_thai" required placeholder="VD: Đang hoạt động">
+    </label>
+
+    <label>Loại xe
+      <select name="LoaiXe_name" required>
+        <% if (loaiXeList.length === 0) { %>
+          <option disabled>Chưa có loại xe nào</option>
+        <% } else { %>
+          <% loaiXeList.forEach(lx => { %>
+            <option value="<%= lx.LoaiXe_name %>"><%= lx.LoaiXe_name %></option>
+          <% }) %>
+        <% } %>
+      </select>
+    </label>
+
+    <button type="submit">Thêm mới</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
