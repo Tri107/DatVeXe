@@ -6,7 +6,9 @@ require('dotenv').config();
 
 const app = express();
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
+
 
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000/',

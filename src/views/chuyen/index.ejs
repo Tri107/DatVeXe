@@ -1,89 +1,168 @@
-<%- include('../partials/header', { title: 'Quản lý chuyến', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section class="container mt-4">
-  <h2 class="mb-3">Quản lý chuyến</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
 
-  <form action="/admin/chuyen/add" method="POST" class="row g-2 mb-3">
-    <div class="col-md-3">
-      <input type="text" name="Chuyen_name" placeholder="Tên chuyến" class="form-control" required>
-    </div>
+<body class="bg-light">
 
-    <div class="col-md-2">
-      <select name="Tinh_Trang" class="form-select" required>
-        <option value="còn chỗ">Còn chỗ</option>
-        <option value="hết chỗ">Hết chỗ</option>
-      </select>
-    </div>
+  <%- include('../partials/header', { title: 'Quản lý chuyến' , user }) %>
 
-    <div class="col-md-3">
-      <input type="datetime-local" name="Ngay_gio" class="form-control" required>
-    </div>
+    <main class="container my-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header text-white header">
+          <h4 class="mb-0">Quản lý chuyến</h4>
+        </div>
 
-    <div class="col-md-2">
-      <select name="TuyenDuong_id" class="form-select" required>
-        <option value="">Chọn tuyến đường</option>
-        <% tuyen.forEach(t => { %>
-          <option value="<%= t.TuyenDuong_id %>">
-            <%= t.BenDi_name %> → <%= t.BenDen_name %>
-          </option>
-        <% }) %>
-      </select>
-    </div>
+        <div class="card-body">
+          <!-- Form thêm chuyến -->
+          <form action="/admin/chuyen/add" method="POST" class="row g-3 align-items-end mb-4">
+            <div class="col-lg-3 col-md-6">
+              <label class="form-label fw-semibold">Tên chuyến</label>
+              <input type="text" name="Chuyen_name" class="form-control" placeholder="Tên chuyến" required>
+            </div>
 
-    <div class="col-md-1">
-      <select name="Xe_id" class="form-select" required>
-        <% xe.forEach(x => { %>
-          <option value="<%= x.Xe_id %>"><%= x.Bien_so %></option>
-        <% }) %>
-      </select>
-    </div>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label fw-semibold">Tình trạng</label>
+              <select name="Tinh_Trang" class="form-select" required>
+                <option value="còn chỗ">Còn chỗ</option>
+                <option value="hết chỗ">Hết chỗ</option>
+              </select>
+            </div>
 
-    <div class="col-md-1">
-      <select name="TaiXe_id" class="form-select" required>
-        <% taixe.forEach(t => { %>
-          <option value="<%= t.TaiXe_id %>"><%= t.TaiXe_name %></option>
-        <% }) %>
-      </select>
-    </div>
+            <div class="col-lg-3 col-md-6">
+              <label class="form-label fw-semibold">Ngày giờ</label>
+              <input type="datetime-local" name="Ngay_gio" class="form-control" required>
+            </div>
 
-    <div class="col-md-12 text-end">
-      <button class="btn btn-primary">Thêm chuyến</button>
-    </div>
-  </form>
+            <div class="col-lg-3 col-md-6">
+              <label class="form-label fw-semibold">Tuyến đường</label>
+              <select name="TuyenDuong_id" class="form-select" required>
+                <option value="">Chọn tuyến đường</option>
+                <% tuyen.forEach(t=> { %>
+                  <option value="<%= t.TuyenDuong_id %>">
+                    <%= t.BenDi_name %> → <%= t.BenDen_name %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
 
-  <table class="table table-striped table-bordered">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Tên chuyến</th>
-        <th>Tình trạng</th>
-        <th>Ngày giờ</th>
-        <th>Tuyến đường</th>
-        <th>Xe</th>
-        <th>Tài xế</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% list.forEach(c => { %>
-        <tr>
-          <td><%= c.Chuyen_id %></td>
-          <td><%= c.Chuyen_name %></td>
-          <td><%= c.Tinh_Trang %></td>
-          <td><%= new Date(c.Ngay_gio).toLocaleString() %></td>
-          <td><%= c.TuyenDuong_name %></td>
-          <td><%= c.Bien_so %></td>
-          <td><%= c.TaiXe_name %></td>
-          <td>
-            <a href="/admin/chuyen/edit/<%= c.Chuyen_id %>" class="btn btn-warning btn-sm">Sửa</a>
-            <form action="/admin/chuyen/delete/<%= c.Chuyen_id %>" method="POST" style="display:inline;">
-              <button class="btn btn-danger btn-sm" onclick="return confirm('Xóa chuyến này?')">Xóa</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</section>
+            <div class="col-lg-2 col-md-4">
+              <label class="form-label fw-semibold">Xe</label>
+              <select name="Xe_id" class="form-select" required>
+                <% xe.forEach(x=> { %>
+                  <option value="<%= x.Xe_id %>">
+                    <%= x.Bien_so %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
 
-<%- include('../partials/footer') %>
+            <div class="col-lg-3 col-md-4">
+              <label class="form-label fw-semibold">Tài xế</label>
+              <select name="TaiXe_id" class="form-select" required>
+                <% taixe.forEach(t=> { %>
+                  <option value="<%= t.TaiXe_id %>">
+                    <%= t.TaiXe_name %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
+
+            <div class="col-12 text-end mt-3">
+              <button class="btn btn-success px-4">Thêm chuyến</button>
+            </div>
+          </form>
+
+
+          <!-- Bảng danh sách chuyến -->
+          <div class="table-responsive">
+            <table id="chuyen" class="table table-striped table-bordered align-middle">
+              <thead class="table-primary">
+                <tr>
+                  <th>ID</th>
+                  <th>Tên chuyến</th>
+                  <th>Tình trạng</th>
+                  <th>Ngày giờ</th>
+                  <th>Tuyến đường</th>
+                  <th>Xe</th>
+                  <th>Tài xế</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!list || list.length===0) { %>
+                  <tr>
+                    <td colspan="8" class="text-center text-muted">Chưa có chuyến nào</td>
+                  </tr>
+                  <% } else { %>
+                    <% list.forEach(c=> { %>
+                      <tr>
+                        <td>
+                          <%= c.Chuyen_id %>
+                        </td>
+                        <td>
+                          <%= c.Chuyen_name %>
+                        </td>
+                        <td>
+                          <span class="badge <%= c.Tinh_Trang === 'còn chỗ' ? 'bg-success' : 'bg-secondary' %>">
+                            <%= c.Tinh_Trang %>
+                          </span>
+                        </td>
+                        <td>
+                          <%= new Date(c.Ngay_gio).toLocaleString('vi-VN') %>
+                        </td>
+                        <td>
+                          <%= c.TuyenDuong_name %>
+                        </td>
+                        <td>
+                          <%= c.Bien_so %>
+                        </td>
+                        <td>
+                          <%= c.TaiXe_name %>
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group btn-group-sm" role="group">
+                            <a href="/admin/chuyen/edit/<%= c.Chuyen_id %>" class="btn btn-warning">Sửa</a>
+                            <button type="submit" form="formDel_<%= c.Chuyen_id %>" class="btn btn-danger">Xóa</button>
+                          </div>
+                          <form id="formDel_<%= c.Chuyen_id %>" action="/admin/chuyen/delete/<%= c.Chuyen_id %>"
+                            method="POST" onsubmit="return confirm('Xóa chuyến này?')">
+                          </form>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+
+      <!-- Script -->
+      <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
+
+      <script>
+        new DataTable('#chuyen', {
+          language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json'
+          },
+          pageLength: 10,
+          lengthMenu: [5, 10, 20, 50]
+        });
+      </script>
+
+</body>
+
+</html>

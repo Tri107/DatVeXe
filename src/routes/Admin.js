@@ -62,7 +62,7 @@ router.post('/loaixe', requireAdmin, async (req, res, next) => {
 });
 
 // Edit form
-router.get('/loaixe/:id/edit', requireAdmin, async (req, res, next) => {
+router.get('/loaixe/edit/:id', requireAdmin, async (req, res, next) => {
   try {
     const item = await LoaiXe.getById(req.params.id);
     if (!item) return res.redirect('/admin/loaixe');

@@ -21,7 +21,7 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.get('/:id/edit', requireAdmin, async (req, res, next) => {
+router.get('/edit/:id', requireAdmin, async (req, res, next) => {
   try {
     const item = await LoaiXe.getById(req.params.id);
     if (!item) return res.redirect('/admin/loaixe');

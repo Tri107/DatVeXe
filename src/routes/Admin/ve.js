@@ -32,7 +32,7 @@ router.get('/edit/:id', async (req, res, next) => {
     const item = await Ve.getById(req.params.id);
     const chuyen = await Chuyen.getAll();
     const khach = await KhachHang.getAll();
-    res.render('ve/edit', { user: req.session?.user || {}, item, chuyen, khach });
+    res.render('ve/edit', { user: req.user || {}, item, chuyen, khach });
   } catch (err) {
     next(err);
   }

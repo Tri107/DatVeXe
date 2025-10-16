@@ -25,8 +25,8 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-// ✏️ Form sửa trạm dừng chân
-router.get('/:id/edit', requireAdmin, async (req, res, next) => {
+// Form sửa trạm dừng chân
+router.get('/edit/:id', requireAdmin, async (req, res, next) => {
   try {
     const item = await TramDungChan.getById(req.params.id);
     if (!item) return res.redirect('/admin/tramdungchan');
@@ -36,7 +36,7 @@ router.get('/:id/edit', requireAdmin, async (req, res, next) => {
   }
 });
 
-// 🔄 Cập nhật trạm dừng chân
+// Cập nhật trạm dừng chân
 router.put('/:id', requireAdmin, async (req, res, next) => {
   try {
     const { TramDungChan_name, Thoi_gian_dung } = req.body;

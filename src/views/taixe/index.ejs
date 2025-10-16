@@ -1,42 +1,134 @@
-<%- include('../partials/header', { title: 'Quản lý tài xế', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section class="container mt-4">
-  <h2 class="mb-3">Quản lý tài xế</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
 
-  <form action="/admin/taixe/add" method="POST" class="row g-2 mb-3">
-    <div class="col-md-2"><input type="text" name="TaiXe_name" placeholder="Tên tài xế" class="form-control" required></div>
-    <div class="col-md-1"><input type="number" name="TaiXe_age" placeholder="Tuổi" class="form-control" required></div>
-    <div class="col-md-2"><input type="text" name="TaiXe_BangLai" placeholder="Bằng lái" class="form-control" required></div>
-    <div class="col-md-2"><input type="date" name="NgayVaoLam" class="form-control" required></div>
-    <div class="col-md-2"><input type="text" name="SDT" placeholder="SĐT" class="form-control" required></div>
-    <div class="col-md-3 text-end"><button class="btn btn-primary">Thêm tài xế</button></div>
-  </form>
+<body class="bg-light">
 
-  <table class="table table-striped table-bordered">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th><th>Tên tài xế</th><th>Tuổi</th><th>Bằng lái</th><th>Ngày vào làm</th><th>SĐT</th><th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% list.forEach(t => { %>
-        <tr>
-          <td><%= t.TaiXe_id %></td>
-          <td><%= t.TaiXe_name %></td>
-          <td><%= t.TaiXe_age %></td>
-          <td><%= t.TaiXe_BangLai %></td>
-          <td><%= new Date(t.NgayVaoLam).toLocaleDateString() %></td>
-          <td><%= t.SDT %></td>
-          <td>
-            <a href="/admin/taixe/edit/<%= t.TaiXe_id %>" class="btn btn-warning btn-sm">Sửa</a>
-            <form action="/admin/taixe/delete/<%= t.TaiXe_id %>" method="POST" style="display:inline;">
-              <button class="btn btn-danger btn-sm" onclick="return confirm('Xóa tài xế này?')">Xóa</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</section>
+  <%- include('../partials/header', { title: 'Quản lý Tài xế' , user }) %>
 
-<%- include('../partials/footer') %>
+    <main class="container my-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header text-white header">
+          <h4 class="mb-0">Quản lý Tài xế</h4>
+        </div>
+
+        <div class="card-body">
+          <!-- Form thêm tài xế -->
+          <form action="/admin/taixe/add" method="POST" class="row g-3 mb-4 align-items-end">
+            <div class="col-md-3">
+              <label class="form-label">Tên tài xế</label>
+              <input type="text" name="TaiXe_name" class="form-control" placeholder="VD: Nguyễn Văn A" required>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Tuổi</label>
+              <input type="number" name="TaiXe_age" class="form-control" placeholder="VD: 35" required>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Bằng lái</label>
+              <input type="text" name="TaiXe_BangLai" class="form-control" placeholder="VD: B2, C" required>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Ngày vào làm</label>
+              <input type="date" name="NgayVaoLam" class="form-control" required>
+            </div>
+
+            <div class="col-md-2">
+              <label class="form-label">Số điện thoại</label>
+              <input type="text" name="SDT" class="form-control" placeholder="VD: 0901234567" required>
+            </div>
+
+            <div class="col-md-1">
+              <button class="btn btn-success w-100">Thêm</button>
+            </div>
+          </form>
+
+          <!-- Bảng danh sách tài xế -->
+          <div class="table-responsive">
+            <table id="taixeTable" class="table table-striped table-bordered align-middle">
+              <thead class="table-primary">
+                <tr>
+                  <th>ID</th>
+                  <th>Tên tài xế</th>
+                  <th>Tuổi</th>
+                  <th>Bằng lái</th>
+                  <th>Ngày vào làm</th>
+                  <th>Số điện thoại</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!list || list.length===0) { %>
+                  <tr>
+                    <td colspan="7" class="text-center text-muted">Chưa có tài xế nào</td>
+                  </tr>
+                  <% } else { %>
+                    <% list.forEach(t=> { %>
+                      <tr>
+                        <td>
+                          <%= t.TaiXe_id %>
+                        </td>
+                        <td>
+                          <%= t.TaiXe_name %>
+                        </td>
+                        <td>
+                          <%= t.TaiXe_age %>
+                        </td>
+                        <td>
+                          <%= t.TaiXe_BangLai %>
+                        </td>
+                        <td>
+                          <%= new Date(t.NgayVaoLam).toLocaleDateString() %>
+                        </td>
+                        <td>
+                          <%= t.SDT %>
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group btn-group-sm" role="group">
+                            <a href="/admin/taixe/edit/<%= t.TaiXe_id %>" class="btn btn-warning">Sửa</a>
+                            <button type="submit" form="formDel_<%= t.TaiXe_id %>" class="btn btn-danger">Xóa</button>
+                          </div>
+                          <form id="formDel_<%= t.TaiXe_id %>" action="/admin/taixe/delete/<%= t.TaiXe_id %>"
+                            method="POST" onsubmit="return confirm('Xóa tài xế này?')">
+                          </form>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+
+      <!-- Script -->
+      <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
+
+      <script>
+        new DataTable('#taixeTable', {
+          language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json'
+          },
+          pageLength: 10,
+          lengthMenu: [5, 10, 20, 50]
+        });
+      </script>
+
+</body>
+
+</html>

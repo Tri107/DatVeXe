@@ -25,8 +25,8 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-// ✏️ Form sửa thông tin khách hàng
-router.get('/:id/edit', requireAdmin, async (req, res, next) => {
+// Form sửa thông tin khách hàng
+router.get('/edit/:id', requireAdmin, async (req, res, next) => {
   try {
     const item = await KhachHang.getById(req.params.id);
     if (!item) return res.redirect('/admin/khachhang');
@@ -36,7 +36,7 @@ router.get('/:id/edit', requireAdmin, async (req, res, next) => {
   }
 });
 
-// 🔄 Cập nhật khách hàng
+// Cập nhật khách hàng
 router.put('/:id', requireAdmin, async (req, res, next) => {
   try {
     const { KhachHang_name, email, SDT } = req.body;

@@ -1,62 +1,123 @@
-<%- include('../partials/header', { title: 'Quản lý khách hàng', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section>
-  <h3>Danh sách khách hàng</h3>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
 
-  <% if (error) { %>
-    <mark><%= error %></mark>
-  <% } %>
+<body class="bg-light">
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Tên khách hàng</th>
-        <th>Email</th>
-        <th>Số điện thoại</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (!items || items.length === 0) { %>
-        <tr><td colspan="5" style="text-align:center;">Chưa có khách hàng nào</td></tr>
-      <% } else { %>
-        <% items.forEach(item => { %>
-          <tr>
-            <td><%= item.KhachHang_id %></td>
-            <td><%= item.KhachHang_name %></td>
-            <td><%= item.email || '(chưa có email)' %></td>
-            <td><%= item.SDT %></td>
-            <td>
-              <a href="/admin/khachhang/<%= item.KhachHang_id %>/edit">✏️ Sửa</a>
-              <form method="post" action="/admin/khachhang/<%= item.KhachHang_id %>?_method=DELETE" style="display:inline;">
-                <button type="submit" onclick="return confirm('Xác nhận xóa khách hàng này?')">🗑️ Xóa</button>
+  <%- include('../partials/header', { title: 'Quản lý khách hàng' , user }) %>
+
+    <main class="container my-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header text-white header">
+          <h4 class="mb-0">Quản lý khách hàng</h4>
+        </div>
+
+        <div class="card-body">
+          <% if (error) { %>
+            <div class="alert alert-danger mb-4">
+              <%= error %>
+            </div>
+            <% } %>
+              <!-- Form thêm khách hàng mới -->
+              <form method="post" action="/admin/khachhang" class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Tên khách hàng</label>
+                  <input name="KhachHang_name" class="form-control" required placeholder="VD: Nguyễn Văn A">
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Email</label>
+                  <input name="email" type="email" class="form-control" placeholder="VD: abc@gmail.com">
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Số điện thoại</label>
+                  <input name="SDT" class="form-control" required placeholder="VD: 0901234567">
+                </div>
+
+                <div class="col-md-1 d-flex align-items-end">
+                  <button type="submit" class="btn btn-success w-100">Thêm</button>
+                </div>
               </form>
-            </td>
-          </tr>
-        <% }) %>
-      <% } %>
-    </tbody>
-  </table>
 
-  <hr>
+              <!-- Bảng danh sách khách hàng -->
+              <div class="table-responsive mb-5">
+                <table id="khachhang" class="table table-striped table-bordered align-middle">
+                  <thead class="table-primary">
+                    <tr>
+                      <th>ID</th>
+                      <th>Tên khách hàng</th>
+                      <th>Email</th>
+                      <th>Số điện thoại</th>
+                      <th class="text-center">Hành động</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (!items || items.length===0) { %>
+                      <tr>
+                        <td colspan="5" class="text-center text-muted">Chưa có khách hàng nào</td>
+                      </tr>
+                      <% } else { %>
+                        <% items.forEach(item=> { %>
+                          <tr>
+                            <td>
+                              <%= item.KhachHang_id %>
+                            </td>
+                            <td>
+                              <%= item.KhachHang_name %>
+                            </td>
+                            <td>
+                              <%= item.email || '(chưa có email)' %>
+                            </td>
+                            <td>
+                              <%= item.SDT %>
+                            </td>
+                            <td class="text-center">
+                              <div class="btn-group btn-group-sm" role="group">
+                                <a href="/admin/khachhang/edit/<%= item.KhachHang_id %>" class="btn btn-warning">Sửa</a>
+                                <button type="submit" form="formDel_<%= item.KhachHang_id %>"
+                                  class="btn btn-danger">Xóa</button>
+                              </div>
+                              <form id="formDel_<%= item.KhachHang_id %>"
+                                action="/admin/khachhang/delete/<%= item.KhachHang_id %>" method="POST"
+                                onsubmit="return confirm('Xác nhận xóa khách hàng này?')">
+                              </form>
+                            </td>
+                          </tr>
+                          <% }) %>
+                            <% } %>
+                  </tbody>
+                </table>
+              </div>
+        </div>
+      </div>
+    </main>
 
-  <h4>➕ Thêm khách hàng mới</h4>
-  <form method="post" action="/admin/khachhang">
-    <label>Tên khách hàng
-      <input name="KhachHang_name" required placeholder="VD: Nguyễn Văn A">
-    </label>
+    <%- include('../partials/footer') %>
 
-    <label>Email
-      <input name="email" type="email" placeholder="VD: abc@gmail.com">
-    </label>
+      <!-- Script -->
+      <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
 
-    <label>Số điện thoại
-      <input name="SDT" required placeholder="VD: 0901234567">
-    </label>
+      <script>
+        new DataTable('#khachhang', {
+          language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json'
+          },
+          pageLength: 10,
+          lengthMenu: [5, 10, 20, 50]
+        });
+      </script>
 
-    <button type="submit">Thêm mới</button>
-  </form>
-</section>
+</body>
 
-<%- include('../partials/footer') %>
+</html>

@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
     const tuyen = await TuyenDuong.getAll();
     const xe = await Xe.getAll();
     const taixe = await TaiXe.getAll();
-    res.render('chuyen/index', { user: req.session?.user || {}, list, tuyen, xe, taixe });
+    res.render('chuyen/index', { user: req.user || {}, list, tuyen, xe, taixe });
   } catch (err) {
     next(err);
   }
@@ -36,7 +36,7 @@ router.get('/edit/:id', async (req, res, next) => {
     const tuyen = await TuyenDuong.getAll();
     const xe = await Xe.getAll();
     const taixe = await TaiXe.getAll();
-    res.render('chuyen/edit', { user: req.session?.user || {}, item, tuyen, xe, taixe });
+    res.render('chuyen/edit', { user: req.user || {}, item, tuyen, xe, taixe });
   } catch (err) {
     next(err);
   }

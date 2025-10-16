@@ -1,24 +1,44 @@
-<%- include('../partials/header', { title: 'Sửa Tỉnh/Thành phố', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section class="container mt-4">
-  <h2 class="mb-3">Chỉnh sửa Tỉnh/Thành phố</h2>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-  <form action="/admin/tinhthanhpho/edit/<%= item.TinhThanhPho_id %>" method="POST">
-    <div class="mb-3">
-      <label for="name" class="form-label">Tên Tỉnh/Thành phố</label>
-      <input
-        type="text"
-        id="name"
-        name="TinhThanhPho_name"
-        value="<%= item.TinhThanhPho_name %>"
-        class="form-control"
-        required
-      >
+<body>
+  <%- include('../partials/header', { title: 'Sửa Tỉnh/Thành phố', user }) %>
+
+  <section class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="bi bi-pencil-square me-2"></i>Sửa thông tin Tỉnh/Thành phố</h2>
+      <a href="/admin/tinhthanhpho" class="btn btn-outline-secondary btn-sm">← Quay lại danh sách</a>
     </div>
 
-    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
-    <a href="/admin/tinhthanhpho" class="btn btn-secondary">Quay lại</a>
-  </form>
-</section>
+    <form action="/admin/tinhthanhpho/edit/<%= item.TinhThanhPho_id %>" method="POST" class="row g-4">
 
-<%- include('../partials/footer') %>
+      <div class="col-md-6">
+        <label class="form-label">Tên Tỉnh/Thành phố</label>
+        <input type="text" name="TinhThanhPho_name" class="form-control" value="<%= item.TinhThanhPho_name %>" required>
+      </div>
+
+      <div class="col-12 text-end mt-3">
+        <button type="submit" class="btn btn-success me-2">
+          <i class="bi bi-save me-1"></i>Lưu thay đổi
+        </button>
+        <a href="/admin/tinhthanhpho" class="btn btn-secondary">
+          <i class="bi bi-x-circle me-1"></i>Hủy
+        </a>
+      </div>
+
+    </form>
+  </section>
+
+  <%- include('../partials/footer') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+
+</html>
