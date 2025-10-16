@@ -1,0 +1,33 @@
+<%- include('../partials/header', { title: 'Sửa xe', user }) %>
+
+<section>
+  <h3>Sửa xe #<%= item.Xe_id %></h3>
+  <% if (error) { %>
+    <mark><%= error %></mark>
+  <% } %>
+
+  <form method="post" action="/admin/xe/<%= item.Xe_id %>?_method=PUT">
+    <label>Biển số
+      <input name="Bien_so" value="<%= item.Bien_so %>" required>
+    </label>
+
+    <label>Trạng thái
+      <input name="Trang_thai" value="<%= item.Trang_thai %>" required>
+    </label>
+
+    <label>Loại xe
+      <select name="LoaiXe_name" required>
+        <% loaiXeList.forEach(lx => { %>
+          <option value="<%= lx.LoaiXe_name %>" <%= lx.LoaiXe_name === item.LoaiXe_name ? 'selected' : '' %>>
+            <%= lx.LoaiXe_name %>
+          </option>
+        <% }) %>
+      </select>
+    </label>
+
+    <button type="submit">Lưu</button>
+    <a role="button" class="secondary" href="/admin/xe">Huỷ</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

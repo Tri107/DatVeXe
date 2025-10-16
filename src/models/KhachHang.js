@@ -2,32 +2,39 @@ const db = require('../config/db');
 
 const KhachHang = {
   getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM KhachHang");
+    const [rows] = await db.query("SELECT KhachHang_id, KhachHang_name, email, SDT FROM KhachHang ORDER BY KhachHang_id DESC");
     return rows;
   },
+
   getById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM KhachHang WHERE MaKhachHang = ?", [id]);
+    const [rows] = await db.query("SELECT KhachHang_id, KhachHang_name, email, SDT FROM KhachHang WHERE KhachHang_id = ?", [id]);
     return rows[0];
   },
+
   create: async (data) => {
-    const { HoTen, GioiTinh, Tuoi } = data;
+    const { KhachHang_name, email, SDT } = data;
     const [result] = await db.query(
-      "INSERT INTO KhachHang (HoTen, GioiTinh, Tuoi) VALUES (?, ?, ?)",
-      [HoTen, GioiTinh, Tuoi]
+      "INSERT INTO KhachHang (KhachHang_name, email, SDT) VALUES (?, ?, ?)",
+      [KhachHang_name, email, SDT]
     );
-    return { MaKhachHang: result.insertId, ...data };
+    return { KhachHang_id: result.insertId, KhachHang_name, email, SDT };
   },
+
   update: async (id, data) => {
-    const { HoTen, GioiTinh, Tuoi } = data;
-    await db.query(
-      "UPDATE KhachHang SET HoTen=?, GioiTinh=?, Tuoi=? WHERE MaKhachHang=?",
-      [HoTen, GioiTinh, Tuoi, id]
-    );
-    return { MaKhachHang: id, ...data };
+    const fields = [];
+    const params = [];
+    if (data.KhachHang_name !== undefined) { fields.push("KhachHang_name = ?"); params.push(data.KhachHang_name); }
+    if (data.email !== undefined) { fields.push("email = ?"); params.push(data.email); }
+    if (data.SDT !== undefined) { fields.push("SDT = ?"); params.push(data.SDT); }
+    if (!fields.length) return KhachHang.getById(id);
+    params.push(id);
+    await db.query(`UPDATE KhachHang SET ${fields.join(', ')} WHERE KhachHang_id = ?`, params);
+    return KhachHang.getById(id);
   },
+
   delete: async (id) => {
-    await db.query("DELETE FROM KhachHang WHERE MaKhachHang = ?", [id]);
-    return { message: "Xóa thành công" };
+    await db.query("DELETE FROM KhachHang WHERE KhachHang_id = ?", [id]);
+    return { message: "Xóa khách hàng thành công" };
   }
 };
 

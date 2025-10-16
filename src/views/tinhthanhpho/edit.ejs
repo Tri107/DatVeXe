@@ -1,0 +1,24 @@
+<%- include('../partials/header', { title: 'Sửa Tỉnh/Thành phố', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Chỉnh sửa Tỉnh/Thành phố</h2>
+
+  <form action="/admin/tinhthanhpho/edit/<%= item.TinhThanhPho_id %>" method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">Tên Tỉnh/Thành phố</label>
+      <input
+        type="text"
+        id="name"
+        name="TinhThanhPho_name"
+        value="<%= item.TinhThanhPho_name %>"
+        class="form-control"
+        required
+      >
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+    <a href="/admin/tinhthanhpho" class="btn btn-secondary">Quay lại</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

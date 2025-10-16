@@ -1,0 +1,68 @@
+<%- include('../partials/header', { title: 'Sửa chuyến', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Sửa thông tin chuyến</h2>
+
+  <form action="/admin/chuyen/edit/<%= item.Chuyen_id %>" method="POST" class="row g-3">
+    
+    <div class="col-md-4">
+      <label class="form-label">Tên chuyến</label>
+      <input type="text" name="Chuyen_name" class="form-control" value="<%= item.Chuyen_name %>" required>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Tình trạng</label>
+      <select name="Tinh_Trang" class="form-select">
+        <option value="còn chỗ" <%= item.Tinh_Trang === 'còn chỗ' ? 'selected' : '' %>>Còn chỗ</option>
+        <option value="hết chỗ" <%= item.Tinh_Trang === 'hết chỗ' ? 'selected' : '' %>>Hết chỗ</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Ngày giờ</label>
+      <input type="datetime-local" name="Ngay_gio" class="form-control"
+        value="<%= new Date(item.Ngay_gio).toISOString().slice(0, 16) %>" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Tuyến đường</label>
+      <select name="TuyenDuong_id" class="form-select">
+        <% tuyen.forEach(t => { %>
+          <option value="<%= t.TuyenDuong_id %>" <%= t.TuyenDuong_id === item.TuyenDuong_id ? 'selected' : '' %>>
+            <%= t.BenDi_name %> → <%= t.BenDen_name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Xe</label>
+      <select name="Xe_id" class="form-select">
+        <% xe.forEach(x => { %>
+          <option value="<%= x.Xe_id %>" <%= x.Xe_id === item.Xe_id ? 'selected' : '' %>>
+            <%= x.Bien_so %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Tài xế</label>
+      <select name="TaiXe_id" class="form-select">
+        <% taixe.forEach(t => { %>
+          <option value="<%= t.TaiXe_id %>" <%= t.TaiXe_id === item.TaiXe_id ? 'selected' : '' %>>
+            <%= t.TaiXe_name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="col-12 text-end mt-3">
+      <button class="btn btn-success">Cập nhật</button>
+      <a href="/admin/chuyen" class="btn btn-secondary">Hủy</a>
+    </div>
+
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,9 @@
+<%- include('partials/header', { title: 'Dashboard', user }) %>
+
+<section>
+  <h2>Tổng quan</h2>
+  <p>Chào <strong><%= user.SDT %></strong> (role: <strong><%= user.role %></strong>)</p>
+  <p>Chọn mục ở menu để quản trị.</p>
+</section>
+
+<%- include('partials/footer') %>

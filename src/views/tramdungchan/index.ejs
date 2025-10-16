@@ -1,0 +1,56 @@
+<%- include('../partials/header', { title: 'Quản lý trạm dừng chân', user }) %>
+
+<section>
+  <h3>Danh sách trạm dừng chân</h3>
+
+  <% if (error) { %>
+    <mark><%= error %></mark>
+  <% } %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tên trạm dừng</th>
+        <th>Thời gian dừng (phút)</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!items || items.length === 0) { %>
+        <tr><td colspan="4" style="text-align:center;">Chưa có trạm dừng chân nào</td></tr>
+      <% } else { %>
+        <% items.forEach(item => { %>
+          <tr>
+            <td><%= item.TramDungChan_id %></td>
+            <td><%= item.TramDungChan_name %></td>
+            <td><%= item.Thoi_gian_dung %> phút</td>
+            <td>
+              <a href="/admin/tramdungchan/<%= item.TramDungChan_id %>/edit">✏️ Sửa</a>
+              <form method="post" action="/admin/tramdungchan/<%= item.TramDungChan_id %>?_method=DELETE" style="display:inline;">
+                <button type="submit" onclick="return confirm('Xác nhận xóa trạm dừng này?')">🗑️ Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h4>➕ Thêm trạm dừng chân mới</h4>
+  <form method="post" action="/admin/tramdungchan">
+    <label>Tên trạm dừng
+      <input name="TramDungChan_name" required placeholder="VD: Trạm nghỉ Bình Dương">
+    </label>
+
+    <label>Thời gian dừng (phút)
+      <input name="Thoi_gian_dung" type="number" min="1" required placeholder="VD: 20">
+    </label>
+
+    <button type="submit">Thêm mới</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

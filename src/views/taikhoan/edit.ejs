@@ -1,0 +1,25 @@
+<%- include('../partials/header', { title: 'Sửa tài khoản', user }) %>
+
+<section>
+  <h3>Sửa tài khoản: <%= item.SDT %></h3>
+  <% if (error) { %><mark><%= error %></mark><% } %>
+
+  <form method="post" action="/admin/taikhoan/<%= item.SDT %>?_method=PUT">
+    <label>Số điện thoại
+      <input value="<%= item.SDT %>" disabled>
+    </label>
+
+    <label>Vai trò
+      <select name="role" required>
+        <option value="khachhang" <%= item.role === 'khachhang' ? 'selected' : '' %>>Khách hàng</option>
+        <option value="taixe" <%= item.role === 'taixe' ? 'selected' : '' %>>Tài xế</option>
+        <option value="admin" <%= item.role === 'admin' ? 'selected' : '' %>>Admin</option>
+      </select>
+    </label>
+
+    <button type="submit">Lưu thay đổi</button>
+    <a role="button" class="secondary" href="/admin/taikhoan">Huỷ</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

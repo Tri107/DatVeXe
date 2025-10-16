@@ -1,0 +1,52 @@
+<%- include('../partials/header', { title: 'Sửa vé', user }) %>
+
+<section class="container mt-4">
+  <h2 class="mb-3">Sửa thông tin vé</h2>
+
+  <form action="/admin/ve/edit/<%= item.Ve_id %>" method="POST" class="row g-3">
+    <div class="col-md-3">
+      <label class="form-label">Giá vé</label>
+      <input type="number" name="Ve_gia" class="form-control" value="<%= item.Ve_gia %>" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Ngày tạo</label>
+      <input type="datetime-local" name="NgayTao" class="form-control" 
+             value="<%= new Date(item.NgayTao).toISOString().slice(0,16) %>" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Ghi chú</label>
+      <input type="text" name="GhiChu" class="form-control" value="<%= item.GhiChu %>">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Khách hàng</label>
+      <select name="KhachHang_id" class="form-select">
+        <% khach.forEach(k => { %>
+          <option value="<%= k.KhachHang_id %>" <%= k.KhachHang_id === item.KhachHang_id ? 'selected' : '' %>>
+            <%= k.KhachHang_name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Chuyến</label>
+      <select name="Chuyen_id" class="form-select">
+        <% chuyen.forEach(c => { %>
+          <option value="<%= c.Chuyen_id %>" <%= c.Chuyen_id === item.Chuyen_id ? 'selected' : '' %>>
+            <%= c.Chuyen_name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="col-12 text-end mt-3">
+      <button class="btn btn-success">Cập nhật</button>
+      <a href="/admin/ve" class="btn btn-secondary">Hủy</a>
+    </div>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

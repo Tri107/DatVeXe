@@ -1,0 +1,25 @@
+<%- include('../partials/header', { title: 'Sửa khách hàng', user }) %>
+
+<section>
+  <h3>Sửa thông tin khách hàng #<%= item.KhachHang_id %></h3>
+  <% if (error) { %><mark><%= error %></mark><% } %>
+
+  <form method="post" action="/admin/khachhang/<%= item.KhachHang_id %>?_method=PUT">
+    <label>Tên khách hàng
+      <input name="KhachHang_name" value="<%= item.KhachHang_name %>" required>
+    </label>
+
+    <label>Email
+      <input name="email" type="email" value="<%= item.email %>" placeholder="VD: abc@gmail.com">
+    </label>
+
+    <label>Số điện thoại
+      <input name="SDT" value="<%= item.SDT %>" required placeholder="VD: 0901234567">
+    </label>
+
+    <button type="submit">Lưu thay đổi</button>
+    <a role="button" class="secondary" href="/admin/khachhang">Huỷ</a>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>
