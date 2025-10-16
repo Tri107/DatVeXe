@@ -52,7 +52,7 @@ module.exports = {
         maxAge: 2 * 60 * 60 * 1000
       });
 
-      return res.json({ message: 'Đăng nhập thành công', user: { SDT: tk.SDT, role: tk.role } });
+      return res.json({ message: 'Đăng nhập thành công',token,  user: { SDT: tk.SDT, role: tk.role } });
     } catch (e) {
       return next(e);
     }
