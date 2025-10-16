@@ -1,35 +1,107 @@
-<%- include('../partials/header', { title: 'Loại xe', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section>
-  <h3>Danh sách loại xe</h3>
-  <% if (error) { %><mark><%= error %></mark><% } %>
-  <table role="grid">
-    <thead><tr><th>ID</th><th>Tên loại</th><th>Sức chứa</th><th></th></tr></thead>
-    <tbody>
-      <% items.forEach(it => { %>
-        <tr>
-          <td><%= it.LoaiXe_id %></td>
-          <td><%= it.LoaiXe_name %></td>
-          <td><%= it.Suc_chua %></td>
-          <td>
-            <a role="button" href="/admin/loaixe/<%= it.LoaiXe_id %>/edit">Sửa</a>
-            <form style="display:inline" method="post" action="/admin/loaixe/<%= it.LoaiXe_id %>?_method=DELETE">
-              <button class="contrast" onclick="return confirm('Xoá mục này?')">Xoá</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</section>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
 
-<section>
-  <h3>Thêm loại xe</h3>
-  <form method="post" action="/admin/loaixe">
-    <label>Tên loại <input name="LoaiXe_name" required></label>
-    <label>Sức chứa <input name="Suc_chua" type="number" min="1" required></label>
-    <button type="submit">Thêm</button>
-  </form>
-</section>
+<body class="bg-light">
 
-<%- include('../partials/footer') %>
+  <%- include('../partials/header', { title: 'Quản lý Loại xe' , user }) %>
+
+    <main class="container my-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header text-white header">
+          <h4 class="mb-0">Quản lý Loại xe</h4>
+        </div>
+
+        <div class="card-body">
+          <!-- Form thêm loại xe -->
+          <form method="POST" action="/admin/loaixe" class="row g-3 mb-4 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label">Tên loại</label>
+              <input name="LoaiXe_name" type="text" class="form-control" placeholder="VD: Xe giường nằm" required>
+            </div>
+
+            <div class="col-md-5">
+              <label class="form-label">Sức chứa</label>
+              <input name="Suc_chua" type="number" min="1" class="form-control" placeholder="VD: 45" required>
+            </div>
+
+            <div class="col-md-1">
+              <button class="btn btn-success w-100">Thêm</button>
+            </div>
+          </form>
+
+          <!-- Bảng danh sách loại xe -->
+          <div class="table-responsive">
+            <table id="loaixeTable" class="table table-striped table-bordered align-middle">
+              <thead class="table-primary text-center">
+                <tr>
+                  <th>ID</th>
+                  <th>Tên loại</th>
+                  <th class="text-center">Sức chứa</th>
+                  <th class="text-center">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (!items || items.length===0) { %>
+                  <tr>
+                    <td colspan="4" class="text-center text-muted">Chưa có loại xe nào</td>
+                  </tr>
+                  <% } else { %>
+                    <% items.forEach(it=> { %>
+                      <tr>
+                        <td class="text-end">
+                          <%= it.LoaiXe_id %>
+                        </td>
+                        <td>
+                          <%= it.LoaiXe_name %>
+                        </td>
+                        <td class="text-end">
+                          <%= it.Suc_chua %>
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group btn-group-sm" role="group">
+                            <a href="/admin/loaixe/edit/<%= it.LoaiXe_id %>" class="btn btn-warning">Sửa</a>
+                            <button type="submit" form="formDel_<%= it.LoaiXe_id %>" class="btn btn-danger">Xóa</button>
+                          </div>
+                          <form id="formDel_<%= it.LoaiXe_id %>" action="/admin/loaixe/delete/<%= it.LoaiXe_id %>"
+                            method="POST" onsubmit="return confirm('Xóa loại xe này?')">
+                          </form>
+                        </td>
+                      </tr>
+                      <% }) %>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+
+      <!-- Script -->
+      <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
+
+      <script>
+        new DataTable('#loaixeTable', {
+          language: {
+            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json'
+          },
+          pageLength: 10,
+          lengthMenu: [5, 10, 20, 50]
+        });
+      </script>
+
+</body>
+
+</html>

@@ -1,25 +1,56 @@
-<%- include('../partials/header', { title: 'Sửa tài khoản', user }) %>
+<!DOCTYPE html>
+<html lang="vi">
 
-<section>
-  <h3>Sửa tài khoản: <%= item.SDT %></h3>
-  <% if (error) { %><mark><%= error %></mark><% } %>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-  <form method="post" action="/admin/taikhoan/<%= item.SDT %>?_method=PUT">
-    <label>Số điện thoại
-      <input value="<%= item.SDT %>" disabled>
-    </label>
+<body>
+  <%- include('../partials/header', { title: 'Sửa tài khoản', user }) %>
 
-    <label>Vai trò
-      <select name="role" required>
-        <option value="khachhang" <%= item.role === 'khachhang' ? 'selected' : '' %>>Khách hàng</option>
-        <option value="taixe" <%= item.role === 'taixe' ? 'selected' : '' %>>Tài xế</option>
-        <option value="admin" <%= item.role === 'admin' ? 'selected' : '' %>>Admin</option>
-      </select>
-    </label>
+  <section class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2><i class="bi bi-pencil-square me-2"></i>Sửa tài khoản: <%= item.SDT %></h2>
+      <a href="/admin/taikhoan" class="btn btn-outline-secondary btn-sm">← Quay lại danh sách</a>
+    </div>
 
-    <button type="submit">Lưu thay đổi</button>
-    <a role="button" class="secondary" href="/admin/taikhoan">Huỷ</a>
-  </form>
-</section>
+    <% if (error) { %>
+      <div class="alert alert-danger"><%= error %></div>
+    <% } %>
 
-<%- include('../partials/footer') %>
+    <form method="POST" action="/admin/taikhoan/<%= item.SDT %>?_method=PUT" class="row g-4">
+
+      <div class="col-md-6">
+        <label class="form-label">Số điện thoại</label>
+        <input class="form-control" value="<%= item.SDT %>" disabled>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Vai trò</label>
+        <select name="role" class="form-select" required>
+          <option value="khachhang" <%= item.role === 'khachhang' ? 'selected' : '' %>>Khách hàng</option>
+          <option value="taixe" <%= item.role === 'taixe' ? 'selected' : '' %>>Tài xế</option>
+          <option value="admin" <%= item.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        </select>
+      </div>
+
+      <div class="col-12 text-end mt-3">
+        <button type="submit" class="btn btn-success me-2">
+          <i class="bi bi-save me-1"></i>Lưu thay đổi
+        </button>
+        <a href="/admin/taikhoan" class="btn btn-secondary">
+          <i class="bi bi-x-circle me-1"></i>Hủy
+        </a>
+      </div>
+    </form>
+  </section>
+
+  <%- include('../partials/footer') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+</body>
+
+</html>

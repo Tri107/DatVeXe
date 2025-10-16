@@ -4,7 +4,7 @@ const { requireAdmin } = require('../../middleware/auth');
 const Xe = require('../../models/Xe');
 const LoaiXe = require('../../models/LoaiXe');
 
-// 📋 Hiển thị danh sách xe
+// Hiển thị danh sách xe
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
     const items = await Xe.getAll();
@@ -13,7 +13,7 @@ router.get('/', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// ➕ Thêm xe mới
+// Thêm xe mới
 router.post('/', requireAdmin, async (req, res, next) => {
   try {
     const { Bien_so, Trang_thai, LoaiXe_name } = req.body;
@@ -26,8 +26,8 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-// ✏️ Form sửa xe
-router.get('/:id/edit', requireAdmin, async (req, res, next) => {
+// Form sửa xe
+router.get('/edit/:id', requireAdmin, async (req, res, next) => {
   try {
     const item = await Xe.getById(req.params.id);
     if (!item) return res.redirect('/admin/xe');
@@ -36,7 +36,7 @@ router.get('/:id/edit', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// 🔄 Cập nhật xe
+// Cập nhật xe
 router.put('/:id', requireAdmin, async (req, res, next) => {
   try {
     const { Bien_so, Trang_thai, LoaiXe_name } = req.body;
@@ -49,7 +49,7 @@ router.put('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-// 🗑️ Xóa xe
+//Xóa xe
 router.delete('/:id', requireAdmin, async (req, res, next) => {
   try {
     await Xe.delete(req.params.id);

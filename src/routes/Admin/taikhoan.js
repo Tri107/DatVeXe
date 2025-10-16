@@ -3,7 +3,7 @@ const router = express.Router();
 const { requireAdmin } = require('../../middleware/auth');
 const TaiKhoan = require('../../models/TaiKhoan');
 
-// 📋 Hiển thị danh sách tài khoản
+//Hiển thị danh sách tài khoản
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
     const items = await TaiKhoan.getAll();
@@ -11,7 +11,7 @@ router.get('/', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// ➕ Thêm tài khoản mới
+// Thêm tài khoản mới
 router.post('/', requireAdmin, async (req, res, next) => {
   try {
     const { SDT, Password_hash, role } = req.body;
@@ -23,8 +23,8 @@ router.post('/', requireAdmin, async (req, res, next) => {
   }
 });
 
-// ✏️ Form sửa tài khoản (chỉ cho sửa role)
-router.get('/:SDT/edit', requireAdmin, async (req, res, next) => {
+// Form sửa tài khoản (chỉ cho sửa role)
+router.get('/edit/:SDT', requireAdmin, async (req, res, next) => {
   try {
     const item = await TaiKhoan.getBySDT(req.params.SDT);
     if (!item) return res.redirect('/admin/taikhoan');
@@ -32,7 +32,7 @@ router.get('/:SDT/edit', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// 🔄 Cập nhật tài khoản (chỉ cập nhật role)
+// Cập nhật tài khoản (chỉ cập nhật role)
 router.put('/:SDT', requireAdmin, async (req, res, next) => {
   try {
     const { role } = req.body;
@@ -44,7 +44,7 @@ router.put('/:SDT', requireAdmin, async (req, res, next) => {
   }
 });
 
-// 🗑️ Xóa tài khoản
+// Xóa tài khoản
 router.delete('/:SDT', requireAdmin, async (req, res, next) => {
   try {
     await TaiKhoan.delete(req.params.SDT);

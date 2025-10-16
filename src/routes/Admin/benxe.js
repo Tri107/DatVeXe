@@ -8,7 +8,7 @@ const TinhThanhPho = require('../../models/TinhThanhPho');
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
     const list = await BenXe.getAll();
-    const tinhthanh = await TinhThanhPho.getAll(); // để đổ dropdown
+    const tinhthanh = await TinhThanhPho.getAll();
     res.render('benxe/index', { user: req.user, list, tinhthanh });
   } catch (err) {
     next(err);

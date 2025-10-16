@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const TaiXe = require('../../models/TaiXe');
 
-// ✅ Danh sách tài xế
+// Danh sách tài xế
 router.get('/', async (req, res, next) => {
   try {
     const list = await TaiXe.getAll();
@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// ✅ Form sửa
+// Form sửa
 router.get('/edit/:id', async (req, res, next) => {
   try {
     const item = await TaiXe.getById(req.params.id);
@@ -23,13 +23,12 @@ router.get('/edit/:id', async (req, res, next) => {
   }
 });
 
-// ✅ Thêm tài xế
+// Thêm tài xế
 router.post('/add', async (req, res, next) => {
   try {
     await TaiXe.create(req.body);
     res.redirect('/admin/taixe');
   } catch (err) {
-    // ⚠️ Bắt lỗi ràng buộc CHECK (ví dụ tuổi < 25)
     const list = await TaiXe.getAll();
     res.render('taixe/index', { 
       user: req.session?.user || {}, 
@@ -39,7 +38,7 @@ router.post('/add', async (req, res, next) => {
   }
 });
 
-// ✅ Cập nhật tài xế
+// Cập nhật tài xế
 router.post('/edit/:id', async (req, res, next) => {
   try {
     await TaiXe.update(req.params.id, req.body);
@@ -47,14 +46,14 @@ router.post('/edit/:id', async (req, res, next) => {
   } catch (err) {
     const item = await TaiXe.getById(req.params.id);
     res.render('taixe/edit', { 
-      user: req.session?.user || {}, 
+      user: req.user || {}, 
       item, 
       error: err.message || 'Lỗi cập nhật tài xế!'
     });
   }
 });
 
-// ✅ Xóa tài xế
+// Xóa tài xế
 router.post('/delete/:id', async (req, res, next) => {
   try {
     await TaiXe.delete(req.params.id);
