@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 const Chuyen = {
-  // Lấy tất cả chuyến (join đầy đủ để hiển thị)
+  // 🔹 Lấy tất cả chuyến (join đầy đủ thông tin hiển thị)
   getAll: async () => {
     const [rows] = await db.query(`
       SELECT 
@@ -28,7 +28,7 @@ const Chuyen = {
     return rows;
   },
 
-  // Lấy chuyến theo ID
+  // 🔹 Lấy chuyến theo ID
   getById: async (id) => {
     const [rows] = await db.query(`
       SELECT 
@@ -44,7 +44,67 @@ const Chuyen = {
     return rows[0];
   },
 
-  // Tạo chuyến mới
+  // 🔹 Lấy danh sách điểm đón (bến đi + trạm)
+  getDiemDon: async (chuyenId) => {
+    const [rows] = await db.query(`
+      SELECT 
+        'benxe' AS type,
+        bx.BenXe_name AS name,
+        ttp.TinhThanhPho_name AS diaChi,  -- Lấy tên tỉnh/thành phố
+        NULL AS time
+      FROM Chuyen c
+      JOIN TuyenDuong td ON c.TuyenDuong_id = td.TuyenDuong_id
+      JOIN BenXe bx ON bx.BenXe_id = td.Ben_di
+      JOIN TinhThanhPho ttp ON ttp.TinhThanhPho_id = bx.TinhThanhPho_id
+      WHERE c.Chuyen_id = ?
+
+      UNION ALL
+
+      SELECT 
+        'tram' AS type,
+        tdc.TramDungChan_name AS name,
+        NULL AS diaChi,
+        tdc.Thoi_gian_dung AS time
+      FROM Tram_Chuyen tc
+      JOIN TramDungChan tdc ON tc.TramDungChan_id = tdc.TramDungChan_id
+      WHERE tc.Chuyen_id = ?
+
+      ORDER BY type DESC
+    `, [chuyenId, chuyenId]);
+    return rows;
+  },
+
+  // 🔹 Lấy danh sách điểm trả (bến đến + trạm)
+  getDiemTra: async (chuyenId) => {
+    const [rows] = await db.query(`
+      SELECT 
+        'benxe' AS type,
+        bx.BenXe_name AS name,
+        ttp.TinhThanhPho_name AS diaChi,
+        NULL AS time
+      FROM Chuyen c
+      JOIN TuyenDuong td ON c.TuyenDuong_id = td.TuyenDuong_id
+      JOIN BenXe bx ON bx.BenXe_id = td.Ben_den
+      JOIN TinhThanhPho ttp ON ttp.TinhThanhPho_id = bx.TinhThanhPho_id
+      WHERE c.Chuyen_id = ?
+
+      UNION ALL
+
+      SELECT 
+        'tram' AS type,
+        tdc.TramDungChan_name AS name,
+        NULL AS diaChi,
+        tdc.Thoi_gian_dung AS time
+      FROM Tram_Chuyen tc
+      JOIN TramDungChan tdc ON tc.TramDungChan_id = tdc.TramDungChan_id
+      WHERE tc.Chuyen_id = ?
+
+      ORDER BY type DESC
+    `, [chuyenId, chuyenId]);
+    return rows;
+  },
+
+  // 🔹 Tạo chuyến mới
   create: async (data) => {
     const { Chuyen_name, Tinh_Trang, Ngay_gio, TuyenDuong_id, Xe_id, TaiXe_id } = data;
     const [result] = await db.query(
@@ -55,7 +115,7 @@ const Chuyen = {
     return { Chuyen_id: result.insertId, ...data };
   },
 
-  // Cập nhật chuyến
+  // 🔹 Cập nhật chuyến
   update: async (id, data) => {
     const fields = [];
     const params = [];
@@ -71,7 +131,7 @@ const Chuyen = {
     return Chuyen.getById(id);
   },
 
-  // Xóa chuyến
+  // 🔹 Xóa chuyến
   delete: async (id) => {
     await db.query("DELETE FROM Chuyen WHERE Chuyen_id = ?", [id]);
     return { message: "Xóa chuyến thành công" };
