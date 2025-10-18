@@ -10,7 +10,7 @@ const Chuyen = {
         c.Tinh_Trang, 
         c.Ngay_gio,
         td.TuyenDuong_id, 
-        CONCAT(b1.BenXe_name, ' → ', b2.BenXe_name) AS TuyenDuong_name,
+        CONCAT(b1.BenXe_name, ' - ', b2.BenXe_name) AS TuyenDuong_name,
         x.Xe_id, 
         x.Bien_so, 
         lx.LoaiXe_name,
