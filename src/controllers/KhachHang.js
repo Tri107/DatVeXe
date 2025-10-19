@@ -16,6 +16,16 @@ module.exports = {
     } catch (err) { next(err); }
   },
 
+  // ✅ Thêm mới
+  getByPhone: async (req, res, next) => {
+    try {
+      const phone = req.params.phone;
+      const item = await KhachHang.getByPhone(phone);
+      if (!item) return res.status(404).json({ message: 'Không tìm thấy khách hàng' });
+      res.json(item);
+    } catch (err) { next(err); }
+  },
+
   create: async (req, res, next) => {
     try {
       const created = await KhachHang.create(req.body);

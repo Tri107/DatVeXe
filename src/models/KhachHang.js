@@ -11,6 +11,14 @@ const KhachHang = {
     return rows[0];
   },
 
+  getByPhone: async (phone) => {
+    const [rows] = await db.query(
+      "SELECT KhachHang_id, KhachHang_name, email, SDT FROM KhachHang WHERE SDT = ?",
+      [phone]
+    );
+    return rows[0];
+  },
+
   create: async (data) => {
     const { KhachHang_name, email, SDT } = data;
     const [result] = await db.query(
