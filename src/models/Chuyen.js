@@ -15,7 +15,9 @@ const Chuyen = {
         x.Bien_so, 
         lx.LoaiXe_name,
         t.TaiXe_id, 
-        t.TaiXe_name
+        t.TaiXe_name,
+        ttp1.TinhThanhPho_name AS DiemDi,
+        ttp2.TinhThanhPho_name AS DiemDen
       FROM Chuyen c
       JOIN TuyenDuong td ON td.TuyenDuong_id = c.TuyenDuong_id
       JOIN BenXe b1 ON b1.BenXe_id = td.Ben_di
@@ -23,6 +25,8 @@ const Chuyen = {
       JOIN Xe x ON x.Xe_id = c.Xe_id
       JOIN LoaiXe lx ON lx.LoaiXe_id = x.LoaiXe_id
       JOIN TaiXe t ON t.TaiXe_id = c.TaiXe_id
+      JOIN tinhthanhpho ttp1 ON b1.TinhThanhPho_id = ttp1.TinhThanhPho_id 
+      JOIN tinhthanhpho ttp2 ON b2.TinhThanhPho_id = ttp2.TinhThanhPho_id 
       ORDER BY c.Ngay_gio DESC
     `);
     return rows;
