@@ -17,7 +17,8 @@ const Chuyen = {
         t.TaiXe_id, 
         t.TaiXe_name,
         ttp1.TinhThanhPho_name AS DiemDi,
-        ttp2.TinhThanhPho_name AS DiemDen
+        ttp2.TinhThanhPho_name AS DiemDen,
+        lx.LoaiXe_name
       FROM Chuyen c
       JOIN TuyenDuong td ON td.TuyenDuong_id = c.TuyenDuong_id
       JOIN BenXe b1 ON b1.BenXe_id = td.Ben_di
@@ -40,11 +41,28 @@ const Chuyen = {
         c.Chuyen_name, 
         c.Tinh_Trang, 
         c.Ngay_gio,
-        c.TuyenDuong_id, 
-        c.Xe_id, 
-        c.TaiXe_id
+        td.TuyenDuong_id, 
+        CONCAT(b1.BenXe_name, ' - ', b2.BenXe_name) AS TuyenDuong_name,
+        x.Xe_id, 
+        x.Bien_so, 
+        lx.LoaiXe_name,
+        t.TaiXe_id, 
+        t.TaiXe_name,
+        ttp1.TinhThanhPho_name AS DiemDi,
+        ttp2.TinhThanhPho_name AS DiemDen,
+        lx.LoaiXe_name
       FROM Chuyen c
-      WHERE c.Chuyen_id = ?`, [id]);
+      JOIN TuyenDuong td ON td.TuyenDuong_id = c.TuyenDuong_id
+      JOIN BenXe b1 ON b1.BenXe_id = td.Ben_di
+      JOIN BenXe b2 ON b2.BenXe_id = td.Ben_den
+      JOIN Xe x ON x.Xe_id = c.Xe_id
+      JOIN LoaiXe lx ON lx.LoaiXe_id = x.LoaiXe_id
+      JOIN TaiXe t ON t.TaiXe_id = c.TaiXe_id
+      JOIN tinhthanhpho ttp1 ON b1.TinhThanhPho_id = ttp1.TinhThanhPho_id 
+      JOIN tinhthanhpho ttp2 ON b2.TinhThanhPho_id = ttp2.TinhThanhPho_id 
+      WHERE c.Chuyen_id = ? 
+      ORDER BY c.Ngay_gio DESC
+      `, [id]);
     return rows[0];
   },
 
