@@ -15,7 +15,6 @@ const tinhThanhPhoRoutes = require('./TinhThanhPho');
 const taiXeRoutes = require('./TaiXe')
 const tramChuyenRoutes = require('./Tram_Chuyen');
 const authRoutes = require('./Auth'); 
-const bookingRoutes = require('./Booking');
 
 // 🔹 Gắn tiền tố /api
 router.use('/loaixe', loaiXeRoutes);
@@ -31,5 +30,4 @@ router.use('/tinhthanhpho', tinhThanhPhoRoutes);
 router.use('/tram_chuyen', tramChuyenRoutes);
 router.use('/taixe',taiXeRoutes);
 router.use('/auth', authRoutes);
-router.use('/booking', bookingRoutes); 
 module.exports = router;
