@@ -17,11 +17,34 @@ const Ve = {
   },
 
   getById: async (id) => {
-    const [rows] = await db.query(`
-      SELECT Ve_id, Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id
-      FROM Ve WHERE Ve_id = ?`, [id]);
-    return rows[0];
-  },
+  const [rows] = await db.query(`
+    SELECT 
+      v.Ve_id,
+      v.Ve_gia,
+      v.NgayTao,
+      v.GhiChu,
+      v.KhachHang_id,
+      v.Chuyen_id,
+      kh.KhachHang_name,
+      kh.SDT,
+      c.Chuyen_name,
+      c.Ngay_gio,
+      td.TuyenDuong_id,
+      td.Quang_duong,
+      td.Thoi_gian,
+      bdi.BenXe_name AS Ben_di_name,
+      bden.BenXe_name AS Ben_den_name
+    FROM Ve v
+    JOIN KhachHang kh ON v.KhachHang_id = kh.KhachHang_id
+    JOIN Chuyen c      ON v.Chuyen_id = c.Chuyen_id
+    JOIN TuyenDuong td ON c.TuyenDuong_id = td.TuyenDuong_id
+    JOIN BenXe bdi     ON td.Ben_di = bdi.BenXe_id
+    JOIN BenXe bden    ON td.Ben_den = bden.BenXe_id
+    WHERE v.Ve_id = ?
+  `, [id]);
+  return rows[0];
+},
+
 
   create: async (data) => {
     const { Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id } = data;
