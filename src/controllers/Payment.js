@@ -25,7 +25,7 @@ exports.createPayment = async (req, res) => {
       "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     const returnUrl =
       process.env.VNP_RETURN_URL ||
-      "https://sandbox.vnpayment.vn/VnPayReturn";
+      "https://p7jpjljn-3000.asse.devtunnels.ms/api/payment/vnpay/return";
 
     // --- Tạo các tham số thời gian ---
     const now = new Date();
@@ -98,16 +98,22 @@ exports.createPayment = async (req, res) => {
 
 // ✅ Callback khi thanh toán xong
 exports.vnpayReturn = (req, res) => {
-  const ok = req.query.vnp_ResponseCode === "00";
-  res.send(`
-    <div style="font-family:sans-serif; text-align:center; padding:40px">
-      <h2 style="color:${ok ? "green" : "crimson"}">
-        ${ok ? "✅ Thanh toán thành công!" : "❌ Thanh toán thất bại!"}
-      </h2>
-      <p>Mã tham chiếu: <b>${req.query.vnp_TxnRef || ""}</b></p>
-      <p>Số tiền: <b>${
-        req.query.vnp_Amount ? Number(req.query.vnp_Amount) / 100 : 0
-      } VND</b></p>
-    </div>
-  `);
+  try {
+    const responseCode = req.query.vnp_ResponseCode;
+    const veId = req.query.vnp_TxnRef || "unknown";
+    const amount = req.query.vnp_Amount ? Number(req.query.vnp_Amount) / 100 : 0;
+
+    console.log("🔹 VNPay Return:", req.query);
+
+    if (responseCode === "00") {
+      // ✅ Nếu thanh toán thành công → điều hướng về app Flutter
+      return res.redirect("datvexe://payment-success");
+    } else {
+      // ❌ Thanh toán thất bại → về app để xử lý lỗi
+      return res.redirect("datvexe://payment-failed");
+    }
+  } catch (err) {
+    console.error("❌ Lỗi xử lý vnpayReturn:", err);
+    return res.status(500).send("Lỗi xử lý phản hồi từ VNPay");
+  }
 };
