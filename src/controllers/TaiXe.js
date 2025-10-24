@@ -1,8 +1,7 @@
 const TaiXe = require('../models/TaiXe');
-
+const danhSachDiemDanh = new Map();
 
 module.exports = {
-
   // 🔹 Lấy tất cả tài xế
   getAll: async (req, res, next) => {
     try {
@@ -18,7 +17,8 @@ module.exports = {
     try {
       const id = req.params.id;
       const item = await TaiXe.getById(id);
-      if (!item) return res.status(404).json({ message: 'Không tìm thấy tài xế' });
+      if (!item)
+        return res.status(404).json({ message: 'Không tìm thấy tài xế' });
       res.json(item);
     } catch (err) {
       next(err);
@@ -40,7 +40,8 @@ module.exports = {
     try {
       const id = req.params.id;
       const updated = await TaiXe.update(id, req.body);
-      if (!updated) return res.status(404).json({ message: 'Không tìm thấy tài xế' });
+      if (!updated)
+        return res.status(404).json({ message: 'Không tìm thấy tài xế' });
       res.json(updated);
     } catch (err) {
       next(err);
@@ -71,31 +72,30 @@ module.exports = {
 
   // 🔸 Danh sách chuyến xe theo tài xế
   getChuyenList: async (req, res, next) => {
-  try {
-    const taiXeId = req.params.taixe_id; // ✅ đọc đúng param
-    console.log("📦 API nhận yêu cầu lấy chuyến cho tài xế ID:", taiXeId);
+    try {
+      const taiXeId = req.params.taixe_id;
+      console.log("API nhận yêu cầu lấy chuyến cho tài xế ID:", taiXeId);
 
-    const list = await TaiXe.getChuyenListByTaiXe(taiXeId);
-    console.log("✅ Số chuyến tìm thấy:", list.length);
+      const list = await TaiXe.getChuyenListByTaiXe(taiXeId);
+      console.log("Số chuyến tìm thấy:", list.length);
 
-    res.json(list);
-  } catch (err) {
-    console.error("❌ Lỗi getChuyenList:", err);
-    next(err);
-  }
-},
-
+      res.json(list);
+    } catch (err) {
+      console.error("Lỗi getChuyenList:", err);
+      next(err);
+    }
+  },
 
   // 🔸 Chi tiết chuyến xe
   getChuyenDetail: async (req, res, next) => {
     try {
       const chuyenId = req.params.chuyen_id;
-      console.log("📦 API lấy chi tiết chuyến ID:", chuyenId);
+      console.log("API lấy chi tiết chuyến ID:", chuyenId);
 
       const detail = await TaiXe.getChuyenDetail(chuyenId);
       res.json(detail);
     } catch (err) {
-      console.error("❌ Lỗi getChuyenDetail:", err);
+      console.error("Lỗi getChuyenDetail:", err);
       next(err);
     }
   },
@@ -110,6 +110,48 @@ module.exports = {
         return res.status(404).json({ message: 'Không tìm thấy tài xế với số điện thoại này' });
 
       res.json(taiXe);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 🔸 Lưu điểm danh tạm (cho tài xế tick "Có mặt" / "Vắng")
+  diemDanhTam: async (req, res, next) => {
+    try {
+      const { chuyen_id, ve_id, coMat } = req.body;
+
+      if (!chuyen_id || !ve_id)
+        return res.status(400).json({ message: 'Thiếu chuyen_id hoặc ve_id' });
+
+      if (!danhSachDiemDanh.has(chuyen_id))
+        danhSachDiemDanh.set(chuyen_id, new Map());
+
+      const veMap = danhSachDiemDanh.get(chuyen_id);
+      veMap.set(ve_id, !!coMat); // true = có mặt, false = vắng
+
+      console.log(`Vé ${ve_id} trong chuyến ${chuyen_id}: ${coMat ? 'Có mặt' : 'Vắng'}`);
+
+      res.json({
+        message: 'Cập nhật trạng thái thành công',
+        data: { chuyen_id, ve_id, coMat },
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 🔸 Lấy danh sách điểm danh tạm của chuyến
+  getDiemDanhTam: async (req, res, next) => {
+    try {
+      const { chuyen_id } = req.params;
+      const veMap = danhSachDiemDanh.get(Number(chuyen_id)) || new Map();
+
+      const danhSach = Array.from(veMap.entries()).map(([ve_id, coMat]) => ({
+        ve_id,
+        coMat,
+      }));
+
+      res.json({ chuyen_id, danhSach });
     } catch (err) {
       next(err);
     }
