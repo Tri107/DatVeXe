@@ -55,6 +55,7 @@ module.exports = {
       const qrData = JSON.stringify({
         Ve_id: ve.Ve_id,
         KhachHang: ve.KhachHang_name,
+        Chuyen_id: ve.Chuyen_id,
         Tuyen: `${ve.Ben_di_name} - ${ve.Ben_den_name}`,
         Ngay_gio: ve.Ngay_gio,
         Gia_ve: ve.Ve_gia,
