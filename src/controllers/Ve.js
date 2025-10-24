@@ -13,6 +13,16 @@ module.exports = {
       res.json(item);
     } catch (err) { next(err); }
   },
+   getByUserSDT: async (req, res, next) => {
+    try {
+      const { sdt } = req.params;
+      const data = await Ve.getByUserSDT(sdt);
+      res.json(data);
+    } catch (err) {
+      console.error(' Lỗi khi tải vé người dùng:', err);
+      next(err);
+    }
+  },
 
   create: async (req, res, next) => {
     try { res.status(201).json(await Ve.create(req.body)); }

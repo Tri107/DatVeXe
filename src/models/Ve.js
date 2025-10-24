@@ -73,7 +73,34 @@ const Ve = {
   delete: async (id) => {
     await db.query("DELETE FROM Ve WHERE Ve_id = ?", [id]);
     return { message: "Xóa vé thành công" };
-  }
+  },
+  getByUserSDT: async (sdt) => {
+  const [rows] = await db.query(`
+    SELECT 
+      v.Ve_id,
+      v.Ve_gia,
+      v.NgayTao,
+      v.GhiChu,
+      c.Chuyen_name,
+      c.Ngay_gio,
+      td.TuyenDuong_id,
+      CONCAT(bdi.BenXe_name, ' - ', bden.BenXe_name) AS TuyenDuong_name,
+      x.Bien_So,
+      kh.KhachHang_name,
+      kh.SDT
+    FROM Ve v
+    JOIN KhachHang kh ON v.KhachHang_id = kh.KhachHang_id
+    JOIN Chuyen c ON v.Chuyen_id = c.Chuyen_id
+    JOIN Xe x ON c.Xe_id = x.Xe_id
+    JOIN TuyenDuong td ON c.TuyenDuong_id = td.TuyenDuong_id
+    JOIN BenXe bdi ON td.Ben_di = bdi.BenXe_id
+    JOIN BenXe bden ON td.Ben_den = bden.BenXe_id
+    WHERE kh.SDT = ?
+    ORDER BY v.NgayTao DESC
+  `, [sdt]);
+  return rows;
+}
+
 };
 
 module.exports = Ve;
