@@ -8,6 +8,9 @@ router.get('/chuyen-list/:taixe_id', controller.getChuyenList);
 router.get('/chuyen/detail/:chuyen_id', controller.getChuyenDetail);
 router.get('/by-phone/:sdt', controller.getByPhone);
 
+router.post('/diem-danh-tam', controller.diemDanhTam);
+router.get('/diem-danh-tam/:chuyen_id', controller.getDiemDanhTam);
+
 router.get('/', controller.getAll);
 router.get('/:id', controller.getById);
 router.post('/', requireAdmin, controller.create);
