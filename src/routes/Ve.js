@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/Ve');
+const veController = require('../controllers/Ve');
 
-router.get('/', controller.getAll);
-router.get('/:id', controller.getById);
-router.get('/user/:sdt', controller.getByUserSDT);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.delete);
+router.get('/', veController.getAll);
+router.get('/:id', veController.getById);
+router.post('/', veController.create);
+router.put('/:id', veController.update);
+router.delete('/:id', veController.delete);
+router.get('/user/:sdt', veController.getByUserSDT);
+
+router.get('/:id/qr', veController.generateQR);
+router.post('/verifyQR', veController.verifyQR);
 
 module.exports = router;
