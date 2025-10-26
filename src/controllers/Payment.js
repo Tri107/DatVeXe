@@ -106,12 +106,15 @@ exports.vnpayReturn = (req, res) => {
     console.log("🔹 VNPay Return:", req.query);
 
     if (responseCode === "00") {
-      // ✅ Nếu thanh toán thành công → điều hướng về app Flutter
-      return res.redirect("datvexe://payment-success");
-    } else {
-      // ❌ Thanh toán thất bại → về app để xử lý lỗi
-      return res.redirect("datvexe://payment-failed");
-    }
+  // Lấy veId thật từ orderId (vnp_TxnRef)
+  const veId = req.query.vnp_TxnRef.split("_")[0]; // => tách "123_1719473822"
+  console.log("✅ VeId sau khi tách:", veId);
+
+  // Redirect kèm veId về app
+  return res.redirect(`datvexe://payment-success?veId=${veId}`);
+} else {
+  return res.redirect("datvexe://payment-failed");
+}
   } catch (err) {
     console.error("❌ Lỗi xử lý vnpayReturn:", err);
     return res.status(500).send("Lỗi xử lý phản hồi từ VNPay");
