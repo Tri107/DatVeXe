@@ -4,10 +4,10 @@ require("dotenv").config();
 
 exports.sendTicketEmail = async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ message: "Thiếu email người nhận" });
+    const { veId } = req.body;
+    if (!veId) return res.status(400).json({ message: "Thiếu mã vé (veId)" });
 
-    // 🔹 Lấy thông tin vé của khách theo email
+    // 🔹 Truy vấn chi tiết vé dựa vào Ve_id
     const [rows] = await db.query(`
       SELECT 
         v.Ve_id,
@@ -27,32 +27,32 @@ exports.sendTicketEmail = async (req, res) => {
       JOIN TuyenDuong td ON c.TuyenDuong_id = td.TuyenDuong_id
       JOIN BenXe bdi ON td.Ben_di = bdi.BenXe_id
       JOIN BenXe bden ON td.Ben_den = bden.BenXe_id
-      WHERE kh.Email = ?
-      ORDER BY v.NgayTao DESC
-      LIMIT 1
-    `, [email]);
+      WHERE v.Ve_id = ?
+    `, [veId]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: "Không tìm thấy vé cho email này" });
+      return res.status(404).json({ message: "Không tìm thấy vé với mã này" });
     }
 
     const ve = rows[0];
     console.log("🎟️ Vé truy vấn từ DB:", ve);
 
-    // 🔹 Cấu hình Gmail transporter
+    // 🔹 Cấu hình SMTP Gmail (ổn định hơn service: 'gmail')
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // true cho port 465
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
       },
     });
 
-    // 🔹 Mẫu email HTML — chuẩn format VNĐ, ngày giờ tiếng Việt
+    // 🔹 Tạo nội dung email
     const mailOptions = {
       from: `"Hệ thống Vé Xe" <${process.env.MAIL_USER}>`,
-      to: ve.Email,
-      subject: "Xác nhận thanh toán & thông tin vé xe",
+      to: ve.Email, // người nhận thực tế
+      subject: `Xác nhận thanh toán & thông tin vé #${ve.Ve_id}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f7fafc;">
           <div style="max-width: 600px; margin: auto; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -63,10 +63,28 @@ exports.sendTicketEmail = async (req, res) => {
             <h3 style="color: #2b6cb0;">🚌 Thông tin vé:</h3>
             <ul style="line-height: 1.6; font-size: 15px;">
               <li><b>Tuyến đường:</b> ${ve.TuyenDuong_name}</li>
+              <li><b>Chuyến:</b> ${ve.Chuyen_name}</li>
               <li><b>Biển số xe:</b> ${ve.Bien_So}</li>
-              <li><b>Giờ khởi hành:</b> ${new Date(ve.Ngay_gio).toLocaleString("vi-VN", {hour: "2-digit",minute: "2-digit",day: "2-digit",month: "2-digit",year: "numeric",})}</li>
+              <li><b>Giờ khởi hành:</b> 
+                ${new Date(ve.Ngay_gio).toLocaleString("vi-VN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+              </li>
               <li><b>Giá vé:</b> ${Number(ve.Ve_gia).toLocaleString("vi-VN")} ₫</li>
-              <li><b>Ngày đặt:</b> ${new Date(ve.NgayTao).toLocaleString("vi-VN", {hour: "2-digit",minute: "2-digit",second: "2-digit",day: "2-digit",month: "2-digit",year: "numeric",})}</li>
+              <li><b>Ngày đặt:</b> 
+                ${new Date(ve.NgayTao).toLocaleString("vi-VN", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}
+              </li>
             </ul>
 
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
@@ -77,9 +95,11 @@ exports.sendTicketEmail = async (req, res) => {
       `,
     };
 
+    // 🔹 Gửi mail
     await transporter.sendMail(mailOptions);
     console.log(`✅ Email đã gửi đến ${ve.Email}`);
     res.json({ message: "Gửi email thành công", email: ve.Email });
+
   } catch (err) {
     console.error("❌ Lỗi gửi email:", err);
     res.status(500).json({ message: "Lỗi gửi email", error: String(err) });
