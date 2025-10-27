@@ -91,4 +91,11 @@ module.exports = {
       next(err);
     }
   },
+
+  getWeeklyStats: async (req, res, next) => {
+    try {
+      const stats = await Ve.getWeeklyStats();
+      res.json(stats);
+    } catch (err) { next(err); }
+  },
 };

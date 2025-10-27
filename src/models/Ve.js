@@ -17,7 +17,7 @@ const Ve = {
   },
 
   getById: async (id) => {
-  const [rows] = await db.query(`
+    const [rows] = await db.query(`
     SELECT 
       v.Ve_id,
       v.Ve_gia,
@@ -42,9 +42,8 @@ const Ve = {
     JOIN BenXe bden    ON td.Ben_den = bden.BenXe_id
     WHERE v.Ve_id = ?
   `, [id]);
-  return rows[0];
-},
-
+    return rows[0];
+  },
 
   create: async (data) => {
     const { Ve_gia, NgayTao, GhiChu, KhachHang_id, Chuyen_id } = data;
@@ -75,7 +74,7 @@ const Ve = {
     return { message: "Xóa vé thành công" };
   },
   getByUserSDT: async (sdt) => {
-  const [rows] = await db.query(`
+    const [rows] = await db.query(`
     SELECT 
       v.Ve_id,
       v.Ve_gia,
@@ -98,9 +97,21 @@ const Ve = {
     WHERE kh.SDT = ?
     ORDER BY v.NgayTao DESC
   `, [sdt]);
-  return rows;
-}
+    return rows;
+  },
 
+  getWeeklyStats: async () => {
+    const [rows] = await db.query(`
+      SELECT 
+      YEARWEEK(NgayTao, 1) AS week, 
+      COUNT(*) AS totalTickets
+      FROM Ve
+      GROUP BY YEARWEEK(NgayTao, 1)
+      ORDER BY YEARWEEK(NgayTao, 1) DESC
+      LIMIT 6;
+    `);
+    return rows;
+  }
 };
 
 module.exports = Ve;

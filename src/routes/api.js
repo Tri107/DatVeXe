@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// 🔹 Import tất cả route con
+// Import tất cả route con
 const loaiXeRoutes = require('./LoaiXe');
 const xeRoutes = require('./Xe');
 const veRoutes = require('./Ve');
@@ -18,7 +18,7 @@ const authRoutes = require('./Auth');
 const paymentRoutes = require('./Payment');
 const emailRoutes = require('./Email');
 
-// 🔹 Gắn tiền tố /api
+// Gắn tiền tố /api
 router.use('/loaixe', loaiXeRoutes);
 router.use('/xe', xeRoutes);
 router.use('/ve', veRoutes);
