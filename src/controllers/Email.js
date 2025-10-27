@@ -7,7 +7,7 @@ exports.sendTicketEmail = async (req, res) => {
     const { veId } = req.body;
     if (!veId) return res.status(400).json({ message: "Thiếu mã vé (veId)" });
 
-    // 🔹 Truy vấn chi tiết vé dựa vào Ve_id
+    // Truy vấn chi tiết vé dựa vào Ve_id
     const [rows] = await db.query(`
       SELECT 
         v.Ve_id,
@@ -35,9 +35,9 @@ exports.sendTicketEmail = async (req, res) => {
     }
 
     const ve = rows[0];
-    console.log("🎟️ Vé truy vấn từ DB:", ve);
+    console.log(" Vé truy vấn từ DB:", ve);
 
-    // 🔹 Cấu hình SMTP Gmail (ổn định hơn service: 'gmail')
+    //  Cấu hình SMTP Gmail (ổn định hơn service: 'gmail')
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -48,11 +48,11 @@ exports.sendTicketEmail = async (req, res) => {
       },
     });
 
-    // 🔹 Tạo nội dung email
+    //  Tạo nội dung email
     const mailOptions = {
       from: `"Hệ thống Vé Xe" <${process.env.MAIL_USER}>`,
-      to: ve.Email, // người nhận thực tế
-      subject: `Xác nhận thanh toán & thông tin vé #${ve.Ve_id}`,
+      to: ve.Email, 
+      subject: `Xác nhận thanh toán & thông tin vé`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f7fafc;">
           <div style="max-width: 600px; margin: auto; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -60,7 +60,7 @@ exports.sendTicketEmail = async (req, res) => {
             <p>Xin chào <b>${ve.KhachHang_name}</b>,</p>
             <p>Bạn đã đặt vé thành công trên hệ thống <b>Đặt Vé Xe</b>.</p>
             <hr style="margin: 16px 0; border: none; border-top: 1px solid #e2e8f0;">
-            <h3 style="color: #2b6cb0;">🚌 Thông tin vé:</h3>
+            <h3 style="color: #2b6cb0;"> Thông tin vé:</h3>
             <ul style="line-height: 1.6; font-size: 15px;">
               <li><b>Tuyến đường:</b> ${ve.TuyenDuong_name}</li>
               <li><b>Chuyến:</b> ${ve.Chuyen_name}</li>
@@ -88,20 +88,20 @@ exports.sendTicketEmail = async (req, res) => {
             </ul>
 
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
-            <p style="color: #4a5568;">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi ❤️</p>
+            <p style="color: #4a5568;">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi </p>
             <p style="color: #718096; font-size: 13px;">Mọi thắc mắc vui lòng liên hệ tổng đài: <b>1900 8888</b></p>
           </div>
         </div>
       `,
     };
 
-    // 🔹 Gửi mail
+    //  Gửi mail
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email đã gửi đến ${ve.Email}`);
+    console.log(` Email đã gửi đến ${ve.Email}`);
     res.json({ message: "Gửi email thành công", email: ve.Email });
 
   } catch (err) {
-    console.error("❌ Lỗi gửi email:", err);
+    console.error(" Lỗi gửi email:", err);
     res.status(500).json({ message: "Lỗi gửi email", error: String(err) });
   }
 };

@@ -18,7 +18,7 @@ function requireLogin(req, res, next) {
 
   try {
     if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not set');
-    const payload = jwt.verify(token, process.env.JWT_SECRET); // { sdt, role, iat, exp }
+    const payload = jwt.verify(token, process.env.JWT_SECRET); 
     req.user = payload;
     return next();
   } catch (e) {

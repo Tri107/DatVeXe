@@ -83,13 +83,9 @@ exports.createPayment = async (req, res) => {
     // --- Tạo link thanh toán ---
     const paymentUrl = `${vnpUrl}?${searchParams.toString()}`;
 
-    console.log("✅ SIGN DATA:", signData);
-    console.log("✅ HASH:", signed);
-    console.log("✅ VNPay URL:", paymentUrl);
-
     return res.json({ paymentUrl, veId });
   } catch (err) {
-    console.error("❌ Lỗi createPayment:", err);
+    console.error(" Lỗi createPayment:", err);
     return res
       .status(500)
       .json({ message: "Lỗi tạo thanh toán", error: String(err) });
@@ -103,20 +99,19 @@ exports.vnpayReturn = (req, res) => {
     const veId = req.query.vnp_TxnRef || "unknown";
     const amount = req.query.vnp_Amount ? Number(req.query.vnp_Amount) / 100 : 0;
 
-    console.log("🔹 VNPay Return:", req.query);
+    console.log(" VNPay Return:", req.query);
 
     if (responseCode === "00") {
-  // Lấy veId thật từ orderId (vnp_TxnRef)
-  const veId = req.query.vnp_TxnRef.split("_")[0]; // => tách "123_1719473822"
-  console.log("✅ VeId sau khi tách:", veId);
+      // Lấy veId thật từ orderId (vnp_TxnRef)
+      const veId = req.query.vnp_TxnRef.split("_")[0]; // => tách "123_1719473822"
 
-  // Redirect kèm veId về app
-  return res.redirect(`datvexe://payment-success?veId=${veId}`);
-} else {
-  return res.redirect("datvexe://payment-failed");
-}
+      // Redirect kèm veId về app
+      return res.redirect(`datvexe://payment-success?veId=${veId}`);
+    } else {
+      return res.redirect("datvexe://payment-failed");
+    }
   } catch (err) {
-    console.error("❌ Lỗi xử lý vnpayReturn:", err);
+    console.error(" Lỗi xử lý vnpayReturn:", err);
     return res.status(500).send("Lỗi xử lý phản hồi từ VNPay");
   }
 };

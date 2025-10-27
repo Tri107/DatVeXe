@@ -49,7 +49,6 @@ const Chuyen = {
         td.TuyenDuong_id, 
         CONCAT(b1.BenXe_name, ' - ', b2.BenXe_name) AS TuyenDuong_name,
 
-
         b1.BenXe_name AS Ben_di_name,
         b2.BenXe_name AS Ben_den_name,
 
