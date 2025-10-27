@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/style.css" />
-  <title>Document</title>
+  <title>Dashboard</title>
 </head>
 
 <body>
@@ -18,9 +18,14 @@
         </strong> (role: <strong>
           <%= user.role %>
         </strong>)</p>
-      <p>Chọn mục ở menu để quản trị.</p>
     </section>
 
+    <section>
+      <h3>Thống kê vé theo tuần</h3>
+      <canvas id="ticketChart" width="400" height="200"></canvas>
+    </section>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <%- include('partials/footer') %>
 </body>
 
