@@ -74,10 +74,8 @@ module.exports = {
   getChuyenList: async (req, res, next) => {
     try {
       const taiXeId = req.params.taixe_id;
-      console.log("API nhận yêu cầu lấy chuyến cho tài xế ID:", taiXeId);
 
       const list = await TaiXe.getChuyenListByTaiXe(taiXeId);
-      console.log("Số chuyến tìm thấy:", list.length);
 
       res.json(list);
     } catch (err) {
@@ -90,7 +88,6 @@ module.exports = {
   getChuyenDetail: async (req, res, next) => {
     try {
       const chuyenId = req.params.chuyen_id;
-      console.log("API lấy chi tiết chuyến ID:", chuyenId);
 
       const detail = await TaiXe.getChuyenDetail(chuyenId);
       res.json(detail);
@@ -128,8 +125,6 @@ module.exports = {
 
       const veMap = danhSachDiemDanh.get(chuyen_id);
       veMap.set(ve_id, !!coMat); // true = có mặt, false = vắng
-
-      console.log(`Vé ${ve_id} trong chuyến ${chuyen_id}: ${coMat ? 'Có mặt' : 'Vắng'}`);
 
       res.json({
         message: 'Cập nhật trạng thái thành công',

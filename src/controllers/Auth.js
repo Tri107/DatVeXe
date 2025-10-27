@@ -10,62 +10,61 @@ const otpStore = {};
 
 module.exports = {
   sendOtp: async (req, res) => {
-  try {
-    let { SDT } = req.body;
-    SDT = normalizePhone(SDT);
-    if (!PHONE_REGEX.test(SDT))
-      return res.status(400).json({ message: 'SĐT không hợp lệ' });
+    try {
+      let { SDT } = req.body;
+      SDT = normalizePhone(SDT);
+      if (!PHONE_REGEX.test(SDT))
+        return res.status(400).json({ message: 'SĐT không hợp lệ' });
 
-    const existed = await TaiKhoan.getBySDT(SDT);
-    if (existed)
-      return res.status(409).json({ message: 'SĐT đã tồn tại' });
+      const existed = await TaiKhoan.getBySDT(SDT);
+      if (existed)
+        return res.status(409).json({ message: 'SĐT đã tồn tại' });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStore[SDT] = { otp, expires: Date.now() + 5 * 60 * 1000 };
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpStore[SDT] = { otp, expires: Date.now() + 5 * 60 * 1000 };
 
-   const axios = require('axios');
+      const axios = require('axios');
 
-const response = await axios.post(
-  'https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/',
-  {
-    Phone: SDT,
-    Content: `${otp} la ma xac minh dang ky Baotrixemay cua ban`,
-   //Content: `Ma OTP xac nhan dang ky cua ban la: ${otp}`,
-    ApiKey: process.env.ESMS_API_KEY,
-    SecretKey: process.env.ESMS_SECRET_KEY,
-    SmsType: '2',
-    Brandname: 'Baotrixemay'   
-    
-  },
-  {
-    headers: { 'Content-Type': 'application/json' }
-  }
-);
+      const response = await axios.post(
+        'https://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_post_json/',
+        {
+          Phone: SDT,
+          Content: `${otp} la ma xac minh dang ky Baotrixemay cua ban`,
+          ApiKey: process.env.ESMS_API_KEY,
+          SecretKey: process.env.ESMS_SECRET_KEY,
+          SmsType: '2',
+          Brandname: 'Baotrixemay'
 
+        },
+        {
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
 
 
-console.log('📩 eSMS response:', response.data);
 
-    if (String(response.data.CodeResult) !== '100') {
-      return res.status(400).json({
-        message: 'Gửi OTP thất bại',
-        esms: response.data
+      console.log(' eSMS response:', response.data);
+
+      if (String(response.data.CodeResult) !== '100') {
+        return res.status(400).json({
+          message: 'Gửi OTP thất bại',
+          esms: response.data
+        });
+      }
+
+      return res.json({ message: 'Đã gửi OTP thành công' });
+    } catch (err) {
+      console.error(' Lỗi gửi OTP:',
+        err.response?.status,
+        err.response?.data || err.message
+      );
+
+      return res.status(500).json({
+        message: 'Lỗi gửi OTP',
+        error: err.response?.data || err.message
       });
     }
-
-    return res.json({ message: 'Đã gửi OTP thành công' });
-  } catch (err) {
-    console.error('❌ Lỗi gửi OTP:',
-      err.response?.status,
-      err.response?.data || err.message
-    );
-
-    return res.status(500).json({
-      message: 'Lỗi gửi OTP',
-      error: err.response?.data || err.message
-    });
-  }
-},
+  },
 
 
 
@@ -130,11 +129,11 @@ console.log('📩 eSMS response:', response.data);
       res.cookie('access_token', token, {
         httpOnly: true,
         sameSite: 'lax',
-        secure: false, // true nếu dùng HTTPS
+        secure: false,
         maxAge: 2 * 60 * 60 * 1000
       });
 
-      return res.json({ message: 'Đăng nhập thành công',token,  user: { SDT: tk.SDT, role: tk.role } });
+      return res.json({ message: 'Đăng nhập thành công', token, user: { SDT: tk.SDT, role: tk.role } });
     } catch (e) {
       return next(e);
     }
