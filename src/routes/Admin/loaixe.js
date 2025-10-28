@@ -40,7 +40,7 @@ router.put('/:id', requireAdmin, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', requireAdmin, async (req, res, next) => {
+router.post('/:id', requireAdmin, async (req, res, next) => {
   try { await LoaiXe.delete(req.params.id); res.redirect('/admin/loaixe'); }
   catch (e) { next(e); }
 });

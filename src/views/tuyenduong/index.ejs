@@ -7,135 +7,139 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.css">
   <link rel="stylesheet" href="/style.css">
+  <title>Quản lý Tuyến Đường</title>
 </head>
 
 <body class="bg-light">
 
-  <%- include('../partials/header', { title: 'Quản lý Tuyến Đường' , user }) %>
+  <%- include('../partials/header', { title: 'Quản lý Tuyến Đường', user }) %>
 
-    <main class="container my-5">
-      <div class="card shadow-sm border-0">
-        <div class="card-header text-white header">
-          <h4 class="mb-0">Quản lý Tuyến Đường</h4>
-        </div>
+  <main class="container my-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-header text-white header">
+        <h4 class="mb-0">Quản lý Tuyến Đường</h4>
+      </div>
 
-        <div class="card-body">
-          <!-- Form thêm tuyến đường -->
-          <form action="/admin/tuyenduong/add" method="POST" class="row g-3 mb-4 align-items-end">
-            <div class="col-md-3">
-              <label class="form-label">Quãng đường (km)</label>
-              <input type="text" name="Quang_duong" class="form-control" placeholder="VD: 120" required>
-            </div>
+      <div class="card-body">
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
 
-            <div class="col-md-2">
-              <label class="form-label">Thời gian (giờ)</label>
-              <input type="text" name="Thoi_gian" class="form-control" placeholder="VD: 3.5" required>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Bến đi</label>
-              <select name="Ben_di" class="form-select" required>
-                <option value="">-- Chọn Bến đi --</option>
-                <% benxe.forEach(b=> { %>
-                  <option value="<%= b.BenXe_id %>">
-                    <%= b.BenXe_name %>
-                  </option>
-                  <% }) %>
-              </select>
-            </div>
-
-            <div class="col-md-3">
-              <label class="form-label">Bến đến</label>
-              <select name="Ben_den" class="form-select" required>
-                <option value="">-- Chọn Bến đến --</option>
-                <% benxe.forEach(b=> { %>
-                  <option value="<%= b.BenXe_id %>">
-                    <%= b.BenXe_name %>
-                  </option>
-                  <% }) %>
-              </select>
-            </div>
-
-            <div class="col-md-1">
-              <button class="btn btn-success w-100">Thêm</button>
-            </div>
-          </form>
-
-          <!-- Bảng danh sách tuyến đường -->
-          <div class="table-responsive">
-            <table id="tuyenduong" class="table table-striped table-bordered align-middle">
-              <thead class="table-primary">
-                <tr>
-                  <th>ID</th>
-                  <th>Quãng đường (km)</th>
-                  <th>Thời gian (giờ)</th>
-                  <th>Bến đi</th>
-                  <th>Bến đến</th>
-                  <th class="text-center">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if (!list || list.length===0) { %>
-                  <tr>
-                    <td colspan="6" class="text-center text-muted">Chưa có tuyến đường nào</td>
-                  </tr>
-                  <% } else { %>
-                    <% list.forEach(item=> { %>
-                      <tr>
-                        <td>
-                          <%= item.TuyenDuong_id %>
-                        </td>
-                        <td>
-                          <%= item.Quang_duong %>
-                        </td>
-                        <td>
-                          <%= item.Thoi_gian %>
-                        </td>
-                        <td>
-                          <%= item.BenDi_name %>
-                        </td>
-                        <td>
-                          <%= item.BenDen_name %>
-                        </td>
-                        <td class="text-center">
-                          <div class="btn-group btn-group-sm" role="group">
-                            <a href="/admin/tuyenduong/edit/<%= item.TuyenDuong_id %>" class="btn btn-warning">Sửa</a>
-                            <button type="submit" form="formDel_<%= item.TuyenDuong_id %>"
-                              class="btn btn-danger">Xóa</button>
-                          </div>
-                          <form id="formDel_<%= item.TuyenDuong_id %>"
-                            action="/admin/tuyenduong/delete/<%= item.TuyenDuong_id %>" method="POST"
-                            onsubmit="return confirm('Xóa tuyến đường này?')">
-                          </form>
-                        </td>
-                      </tr>
-                      <% }) %>
-                        <% } %>
-              </tbody>
-            </table>
+        
+        <form id="formAddTuyen" action="/admin/tuyenduong/add" method="POST" class="row g-3 mb-4 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label">Quãng đường (km)</label>
+            <input type="number" step="0.1" min="0" name="Quang_duong" class="form-control" placeholder="VD: 120" required>
           </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Thời gian khởi hành</label>
+            <input type="datetime-local" name="Thoi_gian" class="form-control" required>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">Bến đi</label>
+            <select name="Ben_di" id="Ben_di" class="form-select" required>
+              <option value="">-- Chọn Bến đi --</option>
+              <% (benxe || []).forEach(b => { %>
+                <option value="<%= b.BenXe_id %>"><%= b.BenXe_name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label">Bến đến</label>
+            <select name="Ben_den" id="Ben_den" class="form-select" required>
+              <option value="">-- Chọn Bến đến --</option>
+              <% (benxe || []).forEach(b => { %>
+                <option value="<%= b.BenXe_id %>"><%= b.BenXe_name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="col-md-1">
+            <button class="btn btn-success w-100">Thêm</button>
+          </div>
+        </form>
+
+        <!-- Bảng danh sách tuyến đường -->
+        <div class="table-responsive">
+          <table id="tuyenduong" class="table table-striped table-bordered align-middle">
+            <thead class="table-primary">
+              <tr>
+                <th>ID</th>
+                <th>Quãng đường (km)</th>
+                <th>Thời gian khởi hành</th>
+                <th>Bến đi</th>
+                <th>Bến đến</th>
+                <th class="text-center">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (!list || list.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="text-center text-muted">Chưa có tuyến đường nào</td>
+                </tr>
+              <% } else { %>
+                <% list.forEach(item => { %>
+                  <tr>
+                    <td><%= item.TuyenDuong_id %></td>
+                    <td><%= item.Quang_duong %></td>
+                    <td>
+                      <%= new Date(item.Thoi_gian).toLocaleString('vi-VN', {
+                            timeZone: 'Asia/Ho_Chi_Minh',
+                            day: '2-digit', month: '2-digit', year: 'numeric',
+                            hour: '2-digit', minute: '2-digit'
+                          }) %>
+                    </td>
+                    <td><%= item.BenDi_name %></td>
+                    <td><%= item.BenDen_name %></td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <a href="/admin/tuyenduong/edit/<%= item.TuyenDuong_id %>" class="btn btn-warning">Sửa</a>
+                        <button type="submit" form="formDel_<%= item.TuyenDuong_id %>" class="btn btn-danger">Xóa</button>
+                      </div>
+                      <form id="formDel_<%= item.TuyenDuong_id %>"
+                            action="/admin/tuyenduong/delete/<%= item.TuyenDuong_id %>"
+                            method="POST"
+                            onsubmit="return confirm('Xóa tuyến đường này?')">
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
-    <%- include('../partials/footer') %>
+  <%- include('../partials/footer') %>
 
-      <!-- Script -->
-      <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
-      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
-      <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
+  
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/2.3.4/js/dataTables.bootstrap5.js"></script>
 
-      <script>
-        new DataTable('#tuyenduong', {
-          language: {
-            url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json'
-          },
-          pageLength: 10,
-          lengthMenu: [5, 10, 20, 50]
-        });
-      </script>
+  <script>
+   
+    new DataTable('#tuyenduong', {
+      language: { url: 'https://cdn.datatables.net/plug-ins/2.3.4/i18n/vi.json' },
+      pageLength: 10,
+      lengthMenu: [5, 10, 20, 50]
+    });
 
+ 
+    document.getElementById('formAddTuyen').addEventListener('submit', function (e) {
+      const benDi = document.getElementById('Ben_di').value;
+      const benDen = document.getElementById('Ben_den').value;
+      if (benDi && benDen && benDi === benDen) {
+        e.preventDefault();
+        alert('Bến đi và Bến đến không được trùng nhau.');
+      }
+    });
+  </script>
 </body>
-
 </html>

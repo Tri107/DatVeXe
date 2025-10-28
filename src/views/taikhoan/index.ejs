@@ -82,8 +82,9 @@
                                 <a href="/admin/taikhoan/edit/<%= item.SDT %>" class="btn btn-warning">Sửa</a>
                                 <button type="submit" form="formDel_<%= item.SDT %>" class="btn btn-danger">Xóa</button>
                               </div>
-                              <form id="formDel_<%= item.SDT %>" action="/admin/taikhoan/delete/<%= item.SDT %>"
-                                method="POST" onsubmit="return confirm('Xác nhận xóa tài khoản này?')">
+                              <form id="formDel_<%= item.SDT %>" method="POST"
+                                action="/admin/taikhoan/<%= item.SDT %>?_method=DELETE"
+                                onsubmit="return confirm('Xác nhận xóa tài khoản này?')">
                               </form>
                             </td>
                           </tr>

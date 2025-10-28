@@ -88,10 +88,10 @@
                           <div class="btn-group btn-group-sm" role="group">
                             <a href="/admin/xe/edit/<%= item.Xe_id %>" class="btn btn-warning">Sửa</a>
                             <button type="submit" form="formDel_<%= item.Xe_id %>" class="btn btn-danger">Xóa</button>
-                          </div>
-                          <form id="formDel_<%= item.Xe_id %>" action="/admin/xe/delete/<%= item.Xe_id %>" method="POST"
-                            onsubmit="return confirm('Xóa xe này?')">
-                          </form>
+                            <form id="formDel_<%= item.Xe_id %>" method="POST"
+                              action="/admin/xe/<%= item.Xe_id %>?_method=DELETE"
+                              onsubmit="return confirm('Xóa xe này?')">
+                            </form>
                         </td>
                       </tr>
                       <% }) %>
