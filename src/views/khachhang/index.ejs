@@ -85,8 +85,8 @@
                                 <button type="submit" form="formDel_<%= item.KhachHang_id %>"
                                   class="btn btn-danger">Xóa</button>
                               </div>
-                              <form id="formDel_<%= item.KhachHang_id %>"
-                                action="/admin/khachhang/delete/<%= item.KhachHang_id %>" method="POST"
+                              <form id="formDel_<%= item.KhachHang_id %>" method="POST"
+                                action="/admin/khachhang/<%= item.KhachHang_id %>?_method=DELETE"
                                 onsubmit="return confirm('Xác nhận xóa khách hàng này?')">
                               </form>
                             </td>

@@ -21,14 +21,14 @@
 
         <div class="card-body">
 
-          <!-- Hiển thị lỗi -->
+          
           <% if (error) { %>
             <div class="alert alert-danger">
               <%= error %>
             </div>
             <% } %>
 
-              <!-- Form thêm trạm dừng chân -->
+              
               <form method="POST" action="/admin/tramdungchan" class="row g-3 mb-4 align-items-end">
                 <div class="col-md-6">
                   <label class="form-label">Tên trạm dừng</label>
@@ -46,7 +46,7 @@
                 </div>
               </form>
 
-              <!-- Bảng danh sách trạm dừng chân -->
+              
               <div class="table-responsive">
                 <table id="tramDungTable" class="table table-striped table-bordered align-middle">
                   <thead class="table-primary">
@@ -81,8 +81,8 @@
                                 <button type="submit" form="formDel_<%= item.TramDungChan_id %>"
                                   class="btn btn-danger">Xóa</button>
                               </div>
-                              <form id="formDel_<%= item.TramDungChan_id %>"
-                                action="/admin/tramdungchan/delete/<%= item.TramDungChan_id %>" method="POST"
+                              <form id="formDel_<%= item.TramDungChan_id %>" method="POST"
+                                action="/admin/tramdungchan/<%= item.TramDungChan_id %>?_method=DELETE"
                                 onsubmit="return confirm('Xác nhận xóa trạm dừng này?')">
                               </form>
                             </td>
@@ -98,7 +98,7 @@
 
     <%- include('../partials/footer') %>
 
-      <!-- Script -->
+      
       <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
       <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>

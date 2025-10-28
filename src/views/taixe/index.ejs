@@ -97,8 +97,9 @@
                             <a href="/admin/taixe/edit/<%= t.TaiXe_id %>" class="btn btn-warning">Sửa</a>
                             <button type="submit" form="formDel_<%= t.TaiXe_id %>" class="btn btn-danger">Xóa</button>
                           </div>
-                          <form id="formDel_<%= t.TaiXe_id %>" action="/admin/taixe/delete/<%= t.TaiXe_id %>"
-                            method="POST" onsubmit="return confirm('Xóa tài xế này?')">
+                          <form id="formDel_<%= t.TaiXe_id %>" method="POST"
+                            action="/admin/taixe/<%= t.TaiXe_id %>?_method=DELETE"
+                            onsubmit="return confirm('Xóa tài xế này?')">
                           </form>
                         </td>
                       </tr>
